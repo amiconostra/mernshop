@@ -90,3 +90,12 @@ exports.postEditProduct = (req, res, next) => {
         })
         .catch(err => console.log(err));
 };
+
+exports.deleteProduct = (req, res, next) => {
+    const productId = req.body.productId;
+    Product.findByIdAndRemove(productId)
+        .then(result => {
+            res.redirect('/dashboard/products');
+        })
+        .catch(err => console.log(err));
+};

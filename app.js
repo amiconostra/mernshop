@@ -39,7 +39,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/', require('./routes/router'));
 
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
     .then((result) => {
         app.listen(process.env.PORT || 3000, () => {
             console.log('Running on Port', process.env.PORT || 3000);
