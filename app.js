@@ -4,6 +4,8 @@ require('dotenv').config();
 const config = require('./config.json');
 const path = require('path');
 const expressLayouts = require('express-ejs-layouts');
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 // Models
 const User = require('./models/user');
@@ -13,16 +15,29 @@ const MONGODB_URI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}
 
 const app = express();
 
+// Session DB
+const store = new MongoDBStore({
+    uri: MONGODB_URI,
+    collection: 'sessions'
+});
+
 // Express Settings
 app.set('view engine', 'ejs');
 app.set('views', 'views');
-app.set('layout', path.join(config.theme.name, config.theme.color, 'layout'));
+app.set('layout', path.join(config.theme.name, 'layout'));
 
 // Express Middlewares
 app.use(expressLayouts);
-app.use(express.static(path.join('public', config.theme.name, config.theme.color)));
+app.use(express.static(path.join('public', config.theme.name)));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+    // cookie: { secure: true }
+}));
 
 // User
 app.use((req, res, next) => {
