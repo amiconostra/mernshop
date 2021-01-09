@@ -40,7 +40,9 @@
                       <input type="text" name="imageUrl" value="<%= (editing) ? product.imageUrl : '' %>" class="form-control" id="inputImageUrl" placeholder="Image Url" required>
                     </div>
                     </div>
-                    <input type="hidden" name="productId" value="<%= product._id %>">
+                    <% if(editing) { %>
+                      <input type="hidden" name="productId" value="<%= product._id %>">
+                    <% } %>
                     <button type="submit" class="btn btn-primary"><%= (editing) ? 'Update Product' : 'Add Product' %></button>
                   </form>
                 </div>
