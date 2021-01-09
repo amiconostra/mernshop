@@ -2,6 +2,9 @@ const path = require('path');
 const rootdir = require('../../helpers/rootdir');
 const config = require(path.join(rootdir, 'config.json'));
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
+
+const mailTransporter = nodemailer.createTransport(config.mail.smtp);
 
 // Models
 const User = require(path.join(rootdir, 'models/user'));
@@ -103,7 +106,14 @@ exports.postRegister = (req, res, next) => {
                 })
                 .then(result => {
                     res.redirect('/login');
-                });
+                    return mailTransporter.sendMail({
+                        to: email,
+                        from: config.mail.general.from,
+                        subject: 'Registration Successful!',
+                        html: '<h1>You Successfully Signed Up!</h1>'
+                    });
+                })
+                .catch(err => console.log(err));
         })
         .catch(err => console.log(err));
 };

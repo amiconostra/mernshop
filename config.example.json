@@ -1,0 +1,23 @@
+{
+    "theme": {
+        "name": "tinydash"
+    },
+    "mail": {
+        "smtp": {
+            "host": "",
+            "port": "",
+            "auth": {
+                "user": "",
+                "pass": ""
+            }
+        },
+        "api": {
+            "api_url": "",
+            "api_user": "",
+            "api_key": ""
+        },
+        "general": {
+            "from": ""
+        }
+    }
+}
