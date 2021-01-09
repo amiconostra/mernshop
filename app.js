@@ -6,6 +6,7 @@ const path = require('path');
 const expressLayouts = require('express-ejs-layouts');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
+const flash = require('connect-flash');
 
 // Models
 const User = require('./models/user');
@@ -38,10 +39,15 @@ app.use(session({
     store: store,
     // cookie: { secure: true }
 }));
+app.use(flash());
 
-// User
+// User Handler
 app.use((req, res, next) => {
-    User.findById('ID')
+    if(!req.session.user) {
+        return next();
+    }
+    
+    User.findById(req.session.user._id)
         .then(user => {
             req.user = user;
             return next();

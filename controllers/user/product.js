@@ -8,7 +8,7 @@ const Product = require(path.join(rootdir, 'models/product'));
 exports.getProducts = (req, res, next) => {
     Product.find()
         .then((products) => {
-            res.render(path.join(config.theme.name, config.theme.color, 'products'), {
+            res.render(path.join(config.theme.name, 'products'), {
                 pageTitle: 'Products',
                 path: '/dashboard/products',
                 products: products
@@ -18,7 +18,7 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.getAddProduct = (req, res, next) => {
-    res.render(path.join(config.theme.name, config.theme.color, 'edit-product'), {
+    res.render(path.join(config.theme.name, 'edit-product'), {
         pageTitle: 'Add Product',
         path: '/dashboard/products/add',
         editing: false,
@@ -55,7 +55,7 @@ exports.getEditProduct = (req, res, next) => {
             if(!product) {
                 return res.redirect('/dashboard/products');
             }
-            res.render(path.join(config.theme.name, config.theme.color, 'edit-product'), {
+            res.render(path.join(config.theme.name, 'edit-product'), {
                 pageTitle: 'Add Product',
                 path: '/dashboard/products/add',
                 editing: editMode,

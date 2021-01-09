@@ -5,6 +5,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    firstName: {
+        type: String,
+        required: true
+    },
+    lastName: {
+        type: String,
+        required: true
+    },
     username: {
         type: String,
         required: true
@@ -18,5 +26,9 @@ const userSchema = new mongoose.Schema({
         ref: 'Order'
     }
 });
+
+userSchema.methods.test = function() {
+    console.log("test");
+};
 
 module.exports = mongoose.model('User', userSchema);

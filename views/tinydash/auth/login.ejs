@@ -11,6 +11,11 @@
               </g>
             </svg>
           </a>
+          <% if(flashMessage) { %>
+            <div class="alert <%= (flashMessage[0] == 'success') ? 'alert-success' : 'alert-danger' %>" role="alert">
+              <h4 class="alert-heading"><%= flashMessage[1] %></h4>
+            </div>
+          <% } %>
           <h1 class="h6 mb-3">Sign in</h1>
           <div class="form-group">
             <label for="inputEmail" class="sr-only">Email address</label>
