@@ -42,7 +42,7 @@ exports.postLogin = (req, res, next) => {
                 .then(matches => {
                     if(matches) {
                         req.session.user = user;
-                        req.session.loggedIn = true;
+                        req.session.isAuthenticated = true;
                         return req.session.save(err => {
                             res.redirect('/');
                         });
