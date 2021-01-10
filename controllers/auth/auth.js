@@ -4,6 +4,7 @@ const rootdir = require('../../helpers/rootdir');
 const config = require(path.join(rootdir, 'config.json'));
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
+const flashParser = require(path.join(rootdir, 'helpers', 'flash-parser'));
 
 const mailTransporter = nodemailer.createTransport(config.mail.smtp);
 
@@ -13,18 +14,8 @@ const User = require(path.join(rootdir, 'models/user'));
 exports.getLogin = (req, res, next) => {
     const errorFlash = req.flash('error')[0];
     const successFlash = req.flash('success')[0];
-    let flashMessage = [];
+    let flashMessage = flashParser(errorFlash, successFlash);
 
-    if(errorFlash) {
-        flashMessage[0] = 'error';
-        flashMessage[1] = errorFlash;
-    } else if(successFlash) {
-        flashMessage[0] = 'success';
-        flashMessage[1] = successFlash;
-    } else {
-        flashMessage = null;
-    }
-    
     res.render(path.join(config.theme.name, 'auth/login'), {
         pageTitle: 'Login',
         flashMessage: flashMessage
@@ -52,7 +43,7 @@ exports.postLogin = (req, res, next) => {
                         });
                     }
                     req.flash('error', 'Invalid Password');
-                    return res.redirect('/login');
+                    res.redirect('/login');
                 })
                 .catch(err => {
                     console.log(err);
@@ -67,17 +58,7 @@ exports.postLogin = (req, res, next) => {
 exports.getRegister = (req, res, next) => {
     const errorFlash = req.flash('error')[0];
     const successFlash = req.flash('success')[0];
-    let flashMessage = [];
-
-    if(errorFlash) {
-        flashMessage[0] = 'error';
-        flashMessage[1] = errorFlash;
-    } else if(successFlash) {
-        flashMessage[0] = 'success';
-        flashMessage[1] = successFlash;
-    } else {
-        flashMessage = null;
-    }
+    let flashMessage = flashParser(errorFlash, successFlash);
     
     res.render(path.join(config.theme.name, 'auth/register'), {
         pageTitle: 'Register',
@@ -128,17 +109,7 @@ exports.postLogout = (req, res, next) => {
 exports.getReset = (req, res, next) => {
     const errorFlash = req.flash('error')[0];
     const successFlash = req.flash('success')[0];
-    let flashMessage = [];
-
-    if(errorFlash) {
-        flashMessage[0] = 'error';
-        flashMessage[1] = errorFlash;
-    } else if(successFlash) {
-        flashMessage[0] = 'success';
-        flashMessage[1] = successFlash;
-    } else {
-        flashMessage = null;
-    }
+    let flashMessage = flashParser(errorFlash, successFlash);
 
     res.render(path.join(config.theme.name, 'auth/reset'), {
         pageTitle: 'Reset Password',
@@ -192,17 +163,7 @@ exports.getResetPassword = (req, res, next) => {
     const token = req.params.token;
     const errorFlash = req.flash('error')[0];
     const successFlash = req.flash('success')[0];
-    let flashMessage = [];
-
-    if(errorFlash) {
-        flashMessage[0] = 'error';
-        flashMessage[1] = errorFlash;
-    } else if(successFlash) {
-        flashMessage[0] = 'success';
-        flashMessage[1] = successFlash;
-    } else {
-        flashMessage = null;
-    }
+    let flashMessage = flashParser(errorFlash, successFlash);
 
     User.findOne({resetToken: token, resetTokenExpiration: {$gt: Date.now()}})
         .then(user => {
