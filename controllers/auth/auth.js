@@ -87,12 +87,16 @@ exports.postRegister = (req, res, next) => {
                     return newUser.save();
                 })
                 .then(result => {
+                    req.flash('success', 'User successfully registered! Check your Email for Verification!');
                     res.redirect('/login');
                     return mailTransporter.sendMail({
                         to: email,
                         from: config.mail.general.from,
                         subject: 'Registration Successful!',
-                        html: '<h1>You Successfully Signed Up!</h1>'
+                        html: `<h1>You Successfully Signed Up!</h1>
+                            <p>Email Verification</p>
+                            <p>Click <a href="${config.server.url}/verify">${config.server.url}/verify</a> to Verify your Email</p>
+                        `
                     });
                 })
                 .catch(err => console.log(err));
@@ -111,52 +115,51 @@ exports.getReset = (req, res, next) => {
     const successFlash = req.flash('success')[0];
     let flashMessage = flashParser(errorFlash, successFlash);
 
-    res.render(path.join(config.theme.name, 'auth/reset'), {
+    res.render(path.join(config.theme.name, 'auth/verify-reset'), {
         pageTitle: 'Reset Password',
+        verifyEmail: false,
         flashMessage: flashMessage
     });
 };
 
 exports.postReset = (req, res, next) => {
     const email = req.body.email;
-    let token;
 
     // Generate Random Token
     crypto.randomBytes(32, (err, buffer) => {
         if(err) {
-            console.log(err);
             req.flash('error', 'Unknown Error');
             return res.redirect('/reset');
         }
-        token = buffer.toString('hex');
+        
+        const token = buffer.toString('hex');
+        User.findOne({email: email})
+            .then(user => {
+                if(!user) {
+                    req.flash('error', 'No such User with this Email');
+                    return res.redirect('/reset');
+                }
+
+                user.resetToken = token;
+                user.resetTokenExpiration = Date.now() + 600000; // 10 Minutes in milliseconds
+                user.save()
+                    .then(result => {
+                        req.flash('csrf', req.csrfToken());
+                        res.redirect('/confirmation?type=reset&email=' + email);
+                        return mailTransporter.sendMail({
+                            to: email,
+                            from: config.mail.general.from,
+                            subject: 'Password Reset',
+                            html: `
+                            <p>Requested Password Reset</p>
+                            <p>Click <a href="${config.server.url}/reset/${token}">LINK</a> To Reset password</p>
+                            `
+                        });
+                    })
+                    .catch(error => console.log(error));
+            })
+            .catch(error => console.log(error));
     });
-
-    User.findOne({email: email})
-        .then(user => {
-            if(!user) {
-                req.flash('error', 'No such User with this Email');
-                return res.redirect('/reset');
-            }
-
-            user.resetToken = token;
-            user.resetTokenExpiration = Date.now() + 600000; // 10 Minutes in milliseconds
-            user.save()
-                .then(result => {
-                    req.flash('csrf', req.csrfToken());
-                    res.redirect('/confirmation?type=reset&email=' + email);
-                    return mailTransporter.sendMail({
-                        to: email,
-                        from: config.mail.general.from,
-                        subject: 'Password Reset',
-                        html: `
-                        <p>Requested Password Reset</p>
-                        <p>Click <a href="${config.server.url}/reset/${token}">LINK</a> To Reset password</p>
-                        `
-                    });
-                })
-                .catch(error => console.log(error));
-        })
-        .catch(error => console.log(error));
 };
 
 exports.getResetPassword = (req, res, next) => {
@@ -172,7 +175,7 @@ exports.getResetPassword = (req, res, next) => {
                 return res.redirect('/');
             }
 
-            res.render(path.join(config.theme.name, 'auth/reset-password'), {
+            res.render(path.join(config.theme.name, 'auth/reset'), {
                 pageTitle: 'Reset Password',
                 path: '/auth/reset-password',
                 flashMessage: flashMessage,
@@ -197,7 +200,7 @@ exports.postResetPassword = (req, res, next) => {
                 return res.redirect('/');
             }
             selectUser = user;
-            bcrypt.hash(password, 12)
+            return bcrypt.hash(password, 12)
                 .then(hashedPassword => {
                     selectUser.password = hashedPassword;
                     selectUser.resetToken = undefined;
@@ -213,10 +216,133 @@ exports.postResetPassword = (req, res, next) => {
         .catch(error => console.log(error));
 };
 
+exports.getVerifyEmail = (req, res, next) => {
+    const errorFlash = req.flash('error')[0];
+    const successFlash = req.flash('success')[0];
+    let flashMessage = flashParser(errorFlash, successFlash);
+
+    res.render(path.join(config.theme.name, 'auth/verify-reset'), {
+        pageTitle: 'Reset Password',
+        verifyEmail: true,
+        flashMessage: flashMessage
+    });
+};
+
+exports.postVerifyEmail = (req, res, next) => {
+    const email = req.body.email;
+
+    // Generate Random Token
+    crypto.randomBytes(32, (err, buffer) => {
+        if(err) {
+            console.log(err);
+            req.flash('error', 'Unknown Error');
+            return res.redirect('/verify');
+        }
+        
+        const token = buffer.toString('hex');
+        User.findOne({email: email})
+            .then(user => {
+                if(!user) {
+                    req.flash('error', 'No such User with this Email');
+                    return res.redirect('/verify');
+                }
+                
+                if(user.verified) {
+                    req.flash('error', 'User already Verified');
+                    return res.redirect('/');
+                }
+
+                user.verifyToken = token;
+                user.verifyTokenExpiration = Date.now() + 600000; // 10 Minutes in milliseconds
+                return user.save()
+                    .then(result => {
+                        req.flash('csrf', req.csrfToken());
+                        res.redirect('/confirmation?type=verify&email=' + email);
+                        return mailTransporter.sendMail({
+                            to: email,
+                            from: config.mail.general.from,
+                            subject: 'Email Verification',
+                            html: `
+                            <p>Requested Email Verification</p>
+                            <p>Token: ${token}</p>
+                            <p>Click <a href="${config.server.url}/verify/${token}?userId=${user._id}">${config.server.url}/verify/${token}?userId=${user._id}</a> To Verify Your Email</p>
+                            <p>Or Do it manually at <a href="${config.server.url}/verify/email">${config.server.url}/verify/email</a></p>
+                            `
+                        });
+                    })
+                    .catch(error => console.log(error));
+            })
+            .catch(error => console.log(error));
+    });
+};
+
+exports.getVerifyToken = (req, res, next) => {
+    const userId = req.query.userId;
+    const token = req.params.token;
+
+    User.findOne({_id: userId, verifyToken: token, verifyTokenExpiration: {$gt: Date.now()}})
+        .then(user => {
+            if(!user) {
+                req.flash('error', 'Invalid Token');
+                return res.redirect('/');
+            }
+
+            if(user.verified) {
+                req.flash('error', 'User already Verified');
+                return res.redirect('/');
+            }
+
+            user.verified = true;
+            user.verifyToken = undefined;
+            user.verifyTokenExpiration = undefined;
+            return user.save()
+                .then(result => {
+                    req.flash('success', 'Email has been Verified');
+                    res.redirect('/login');
+                });
+        })
+        .catch(error => console.log(error));
+};
+
+exports.getVerifyAccount = (req, res, next) => {
+    const errorFlash = req.flash('error')[0];
+    const successFlash = req.flash('success')[0];
+    let flashMessage = flashParser(errorFlash, successFlash);
+
+    res.render(path.join(config.theme.name, 'auth/verify-email'), {
+        pageTitle: 'Verify Email',
+        path: '/account/verify',
+        flashMessage: flashMessage
+    });
+};
+
+exports.postVerifyAccount = (req, res, next) => {
+    const email = req.body.email;
+    const token = req.body.verifyToken;
+
+    User.findOne({email: email, verifyToken: token, verifyTokenExpiration: {$gt: Date.now()}})
+        .then(user => {
+            if(!user) {
+                req.flash('error', 'Invalid Token');
+                return res.redirect('/');
+            }
+
+            user.verified = true;
+            user.verifyToken = undefined;
+            user.verifyTokenExpiration = undefined;
+            return user.save()
+                .then(result => {
+                    req.flash('success', 'Email has been Verified');
+                    res.redirect('/login');
+                });
+        })
+        .catch(error => console.log(error));
+};
+
 exports.getConfirmation = (req, res, next) => {
     const confirmType = req.query.type;
     const email = req.query.email;
-    let csrf = req.flash('csrf');
+    const csrf = req.flash('csrf');
 
     if(csrf.length <= 0) {
         return res.redirect('/');

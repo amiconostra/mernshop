@@ -21,6 +21,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    verified: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
+    verifyToken: String,
+    verifyTokenExpiration: Date,
     resetToken: String,
     resetTokenExpiration: Date,
     sales: {
