@@ -6,7 +6,7 @@ const config = require(path.join(rootdir, 'config.json'));
 const Product = require(path.join(rootdir, 'models/product'));
 
 exports.getProducts = (req, res, next) => {
-    Product.find()
+    Product.find({userId: req.user._id})
         .then((products) => {
             res.render(path.join(config.theme.name, 'products'), {
                 pageTitle: 'Products',
