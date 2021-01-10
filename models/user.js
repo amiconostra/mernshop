@@ -21,6 +21,15 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    bio: String,
+    location: {
+        country: String,
+        state: String,
+        address: String,
+        zip: Number
+    },
+    phoneNumber: Number,
+    company: String,
     verified: {
         type: Boolean,
         required: true,

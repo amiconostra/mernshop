@@ -6,6 +6,7 @@ const indexRoute = require('./home/index');
 // User Routes
 const dashboardRoutes = require('./user/dashboard');
 const productRoutes = require('./user/product');
+const profileRoutes = require('./user/profile');
 
 // Auth Routes
 const authRoutes = require('./auth/auth');
@@ -22,6 +23,9 @@ router.use(indexRoute);
 // User Routes
 router.use('/dashboard', dashboardRoutes);
 router.use('/dashboard', productRoutes);
+router.use('/dashboard', profileRoutes);
+
+// Auth Routes
 router.use(authRoutes);
 
 // Error Routes
