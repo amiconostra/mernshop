@@ -10,13 +10,21 @@ const productRoutes = require('./user/product');
 // Auth Routes
 const authRoutes = require('./auth/auth');
 
+// Error Routes
+const errorRoutes = require('./error/error');
+
+// MAIN ROUTERS
 const router = express.Router();
 
+// Home Route
 router.use(indexRoute);
 
 // User Routes
 router.use('/dashboard', dashboardRoutes);
 router.use('/dashboard', productRoutes);
 router.use(authRoutes);
+
+// Error Routes
+router.use(errorRoutes);
 
 module.exports = router;
