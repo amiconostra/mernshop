@@ -1,5 +1,6 @@
 <body class="light ">
     <div class="wrapper vh-100">
+      <%- include('../includes/nav.ejs') %>
       <div class="row align-items-center h-100">
         <form class="col-lg-3 col-md-4 col-10 mx-auto text-center" action="/<%= (verifyEmail) ? 'verify' : 'reset' %>" method="POST">
           <div class="mx-auto text-center my-4">
