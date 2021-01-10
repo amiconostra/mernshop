@@ -1,4 +1,10 @@
 {
+    "server": {
+        "protocol": "",
+        "host": "",
+        "port": 3000,
+        "url": ""
+    },
     "theme": {
         "name": "tinydash"
     },

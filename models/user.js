@@ -21,14 +21,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    resetToken: String,
+    resetTokenExpiration: Date,
     sales: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: 'Order'
     }
 });
-
-userSchema.methods.test = function() {
-    console.log("test");
-};
 
 module.exports = mongoose.model('User', userSchema);
