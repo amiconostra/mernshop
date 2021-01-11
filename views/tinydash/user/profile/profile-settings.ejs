@@ -33,7 +33,7 @@
                         <% } else { %>
                           <h4 class="mb-1"><%= user.username %></h4>
                         <% } %>    
-                        <p class="small mb-3"><span class="badge badge-dark"><%= states.fullName(user.location.state) %>, <%= user.location.country %></span></p>
+                        <p class="small mb-3"><span class="badge badge-dark"><%= (user.location.state) ? states.fullName(user.location.state) + ',' : '' %> <%= user.location.country %></span></p>
                         </div>
                       </div>
                       <div class="row mb-4">

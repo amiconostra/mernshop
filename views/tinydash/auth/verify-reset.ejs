@@ -13,12 +13,12 @@
                 </g>
               </svg>
             </a>
-            <% if(flashSuccess || flashError) { %>
-              <div class="alert <%= (flashSuccess) ? 'alert-success' : 'alert-danger' %>" role="alert">
-                <% if(flashSuccess) { %>
-                  <h4 class="alert-heading"><%= flashSuccess %></h4>
+            <% if(success || error) { %>
+              <div class="alert <%= (success) ? 'alert-success' : 'alert-danger' %>" role="alert">
+                <% if(success) { %>
+                  <h4 class="alert-heading"><%= success %></h4>
                 <% } else { %>
-                  <h4 class="alert-heading"><%= flashError %></h4>
+                  <h4 class="alert-heading"><%= error %></h4>
                 <% } %>
               </div>
             <% } %>
@@ -27,7 +27,7 @@
           <p class="text-muted">Enter your email address and we'll send you an email with instructions to <%= (verifyEmail) ? 'verify your email' : 'reset your password' %></p>
           <div class="form-group">
             <label for="inputEmail" class="sr-only">Email address</label>
-            <input name="email" type="email" id="inputEmail" class="form-control form-control-lg" placeholder="Email Address" autocomplete="on" required autofocus>
+            <input name="email" value="<%= input.email %>" type="email" id="inputEmail" class="form-control form-control-lg <%= (validationBox && validationError.find(err => err.param !== 'email')) ? 'is-valid' : '' %> <%= validationError.find(err => err.param === 'email') ? 'is-invalid' : '' %>" placeholder="Email Address" autocomplete="on" required autofocus>
           </div>
           <button class="btn btn-lg btn-primary btn-block" type="submit"><%= (verifyEmail) ? 'Verify Email' : 'Reset Password' %></button>
           <p class="mt-5 mb-3 text-muted">© 2021</p>

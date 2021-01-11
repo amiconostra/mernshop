@@ -13,12 +13,12 @@
                 </g>
               </svg>
             </a>
-            <% if(flashSuccess || flashError) { %>
-              <div class="alert <%= (flashSuccess) ? 'alert-success' : 'alert-danger' %>" role="alert">
-                <% if(flashSuccess) { %>
-                  <h4 class="alert-heading"><%= flashSuccess %></h4>
+            <% if(success || error) { %>
+              <div class="alert <%= (success) ? 'alert-success' : 'alert-danger' %>" role="alert">
+                <% if(success) { %>
+                  <h4 class="alert-heading"><%= success %></h4>
                 <% } else { %>
-                  <h4 class="alert-heading"><%= flashError %></h4>
+                  <h4 class="alert-heading"><%= error %></h4>
                 <% } %>
               </div>
             <% } %>
@@ -26,32 +26,32 @@
           </div>
           <div class="form-group">
             <label for="inputEmail">Email</label>
-            <input name="email" type="email" class="form-control" id="inputEmail" placeholder="Email Address" required>
+            <input name="email" value="<%= input.email %>" type="email" class="form-control <%= (validationBox && validationError.find(err => err.param !== 'email')) ? 'is-valid' : '' %> <%= validationError.find(err => err.param === 'email') ? 'is-invalid' : '' %>" id="inputEmail" placeholder="Email Address" required>
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="firstname">Firstname</label>
-              <input name="firstName" type="text" id="firstname" class="form-control" placeholder="First Name" required>
+              <input name="firstName" value="<%= input.firstName %>" type="text" id="firstname" class="form-control <%= (validationBox && validationError.find(err => err.param !== 'firstName')) ? 'is-valid' : '' %> <%= validationError.find(err => err.param === 'firstName') ? 'is-invalid' : '' %>" placeholder="First Name" required>
             </div>
             <div class="form-group col-md-6">
               <label for="lastname">Lastname</label>
-              <input name="lastName" type="text" id="lastname" class="form-control" placeholder="Last name" required>
+              <input name="lastName" value="<%= input.lastName %>" type="text" id="lastname" class="form-control <%= (validationBox && validationError.find(err => err.param !== 'lastName')) ? 'is-valid' : '' %> <%= validationError.find(err => err.param === 'lastName') ? 'is-invalid' : '' %>" placeholder="Last name" required>
             </div>
           </div>
           <div class="form-group">
             <label for="inputUsername">Username</label>
-            <input name="username" type="username" class="form-control" id="inputUsername" placeholder="Username" required>
+            <input name="username" value="<%= input.username %>" type="username" class="form-control <%= (validationBox && validationError.find(err => err.param !== 'username')) ? 'is-valid' : '' %> <%= validationError.find(err => err.param === 'username') ? 'is-invalid' : '' %>" id="inputUsername" placeholder="Username" required>
           </div>
           <hr class="my-4">
           <div class="row mb-4">
             <div class="col-md-6">
               <div class="form-group">
                 <label for="inputPassword">New Password</label>
-                <input name="password" type="password" class="form-control" id="inputPassword" placeholder="Password" required>
+                <input name="password" type="password" class="form-control <%= (validationBox && validationError.find(err => err.param !== 'password')) ? 'is-valid' : '' %> <%= validationError.find(err => err.param === 'password') ? 'is-invalid' : '' %>" id="inputPassword" placeholder="Password" required>
               </div>
               <div class="form-group">
                 <label for="inputConfirmPassword">Confirm Password</label>
-                <input name="confirmPassword" type="password" class="form-control" id="inputConfirmPassword" placeholder="Confirm Password" required>
+                <input name="confirmPassword" type="password" class="form-control <%= (validationBox && validationError.find(err => err.param !== 'confirmPassword')) ? 'is-valid' : '' %> <%= validationError.find(err => err.param === 'confirmPassword') ? 'is-invalid' : '' %>" id="inputConfirmPassword" placeholder="Confirm Password" required>
               </div>
             </div>
             <div class="col-md-6">
@@ -61,7 +61,7 @@
                 <li> Minimum 8 character </li>
                 <li>At least one special character</li>
                 <li>At least one number</li>
-                <li>Can’t be the same as a previous password </li>
+                <li>At least one uppercase letter</li>
               </ul>
             </div>
           </div>

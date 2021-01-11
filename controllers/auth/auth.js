@@ -3,6 +3,7 @@ const path = require('path');
 const rootdir = require('../../helpers/rootdir');
 const config = require(path.join(rootdir, 'config.json'));
 const bcrypt = require('bcryptjs');
+const { validationResult } = require('express-validator');
 const nodemailer = require('nodemailer');
 
 const mailTransporter = nodemailer.createTransport(config.mail.smtp);
@@ -13,14 +14,31 @@ const User = require(path.join(rootdir, 'models/user'));
 exports.getLogin = (req, res, next) => {
     res.render(path.join(config.theme.name, 'auth/login'), {
         pageTitle: 'Login',
-        flashSuccess: req.flash('success')[0],
-        flashError: req.flash('error')[0]
+        path: '/login',
+        success: req.flash('success')[0],
+        error: req.flash('error')[0],
+        input: {email: '', firstName: '', lastName: '', username: ''},
+        validationBox: false,
+        validationError: []
     });
 };
 
 exports.postLogin = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()) {
+        return res.status(422).render(path.join(config.theme.name, 'auth/login'), {
+            pageTitle: 'Login',
+            path: '/login',
+            error: errors.array()[0].msg,
+            success: '',
+            input: {email: email},
+            validationBox: true,
+            validationError: errors.array(),
+        });
+    }
 
     User.findOne({email: email})
         .then(user => {
@@ -54,8 +72,12 @@ exports.postLogin = (req, res, next) => {
 exports.getRegister = (req, res, next) => {   
     res.render(path.join(config.theme.name, 'auth/register'), {
         pageTitle: 'Register',
-        flashSuccess: req.flash('success')[0],
-        flashError: req.flash('error')[0]
+        path: '/register',
+        success: req.flash('success')[0],
+        error: req.flash('error')[0],
+        input: {email: '', firstName: '', lastName: '', username: ''},
+        validationBox: false,
+        validationError: []
     });
 };
 
@@ -65,7 +87,19 @@ exports.postRegister = (req, res, next) => {
     const lastName = req.body.lastName;
     const username = req.body.username;
     const password = req.body.password;
-    const confirmPassword = req.body.confirmPassword;
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()) {
+        return res.status(422).render(path.join(config.theme.name, 'auth/register'), {
+            pageTitle: 'Register',
+            path: '/register',
+            error: errors.array()[0].msg,
+            success: '',
+            input: {email: email, firstName: firstName, lastName: lastName, username: username},
+            validationBox: true,
+            validationError: errors.array(),
+        });
+    }
 
     crypto.randomBytes(32, (err, buffer) => {
         if(err) {
@@ -97,7 +131,9 @@ exports.postRegister = (req, res, next) => {
                             subject: 'Registration Successful!',
                             html: `<h1>You Successfully Signed Up!</h1>
                                 <p>Email Verification</p>
+                                <p>Token: ${token}</p>                                
                                 <p>Click <a href="${config.server.url}/verify/${token}?userId=${result._id}">${config.server.url}/verify/${token}?userId=${result._id}</a> To Verify Your Email</p>
+                                <p>Or Do it manually at <a href="${config.server.url}/verify/email">${config.server.url}/verify/email</a></p>
                             `
                         });
                     })
@@ -114,17 +150,34 @@ exports.postLogout = (req, res, next) => {
 };
 
 exports.getReset = (req, res, next) => {
-
     res.render(path.join(config.theme.name, 'auth/verify-reset'), {
         pageTitle: 'Reset Password',
+        path: '/reset',
         verifyEmail: false,
-        flashSuccess: req.flash('success')[0],
-        flashError: req.flash('error')[0]
+        success: req.flash('success')[0],
+        error: req.flash('error')[0],
+        input: {email: ''},
+        validationBox: false,
+        validationError: []
     });
 };
 
 exports.postReset = (req, res, next) => {
     const email = req.body.email;
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()) {
+        return res.status(422).render(path.join(config.theme.name, 'auth/verify-reset'), {
+            pageTitle: 'Reset Password',
+            path: '/reset',
+            verifyEmail: false,
+            error: errors.array()[0].msg,
+            success: '',
+            input: {email: email},
+            validationBox: true,
+            validationError: errors.array(),
+        });
+    }
 
     crypto.randomBytes(32, (err, buffer) => {
         if(err) {
@@ -173,11 +226,14 @@ exports.getResetPassword = (req, res, next) => {
                 return res.redirect('/');
             }
 
-            res.render(path.join(config.theme.name, 'auth/reset'), {
+            res.render(path.join(config.theme.name, 'auth/reset-password'), {
                 pageTitle: 'Reset Password',
-                path: '/auth/reset-password',
-                flashSuccess: req.flash('success')[0],
-                flashError: req.flash('error')[0],
+                path: '/reset',
+                success: req.flash('success')[0],
+                error: req.flash('error')[0],
+                input: {},
+                validationBox: false,
+                validationError: [],
                 userId: user._id.toString(),
                 resetToken: token
             });
@@ -189,8 +245,13 @@ exports.postResetPassword = (req, res, next) => {
     const token = req.body.resetToken;
     const userId = req.body.userId;
     const password = req.body.password;
-    const confirmPassword = req.body.confirmPassword;
     let selectUser;
+    const errors = validationResult(req);
+    
+    if(!errors.isEmpty()) {
+        req.flash('error', errors.array()[0].msg);
+        return res.redirect(`/reset/${token}`);
+    }
 
     User.findOne({_id: userId, resetToken: token, resetTokenExpiration: {$gt: Date.now()}})
         .then(user => {
@@ -218,14 +279,32 @@ exports.postResetPassword = (req, res, next) => {
 exports.getVerifyEmail = (req, res, next) => {
     res.render(path.join(config.theme.name, 'auth/verify-reset'), {
         pageTitle: 'Reset Password',
+        path: '/verify',
         verifyEmail: true,
-        flashSuccess: req.flash('success')[0],
-        flashError: req.flash('error')[0]
+        success: req.flash('success')[0],
+        error: req.flash('error')[0],
+        input: {email: ''},
+        validationBox: false,
+        validationError: []
     });
 };
 
 exports.postVerifyEmail = (req, res, next) => {
     const email = req.body.email;
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()) {
+        return res.status(422).render(path.join(config.theme.name, 'auth/verify-reset'), {
+            pageTitle: 'Verify Email',
+            path: '/verify',
+            verifyEmail: true,
+            error: errors.array()[0].msg,
+            success: '',
+            input: {email: email},
+            validationBox: true,
+            validationError: errors.array(),
+        });
+    }
 
     crypto.randomBytes(32, (err, buffer) => {
         if(err) {
@@ -274,6 +353,12 @@ exports.postVerifyEmail = (req, res, next) => {
 exports.getVerifyToken = (req, res, next) => {
     const userId = req.query.userId;
     const token = req.params.token;
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()) {
+        req.flash('error', errors.array()[0].msg);
+        return res.redirect(`/verify/${token}`);
+    }
 
     User.findOne({_id: userId, verifyToken: token, verifyTokenExpiration: {$gt: Date.now()}})
         .then(user => {
@@ -302,15 +387,32 @@ exports.getVerifyToken = (req, res, next) => {
 exports.getVerifyAccount = (req, res, next) => {
     res.render(path.join(config.theme.name, 'auth/verify-email'), {
         pageTitle: 'Verify Email',
-        path: '/account/verify',
-        flashSuccess: req.flash('success')[0],
-        flashError: req.flash('error')[0]
+        path: '/verify/email',
+        success: req.flash('success')[0],
+        error: req.flash('error')[0],
+        input: {email: ''},
+        validationBox: false,
+        validationError: []
     });
 };
 
 exports.postVerifyAccount = (req, res, next) => {
     const email = req.body.email;
     const token = req.body.verifyToken;
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()) {
+        return res.status(422).render(path.join(config.theme.name, 'auth/verify-email'), {
+            pageTitle: 'Verify Email',
+            path: '/verify/email',
+            verifyEmail: true,
+            error: errors.array()[0].msg,
+            success: '',
+            input: {email: email},
+            validationBox: true,
+            validationError: errors.array(),
+        });
+    }
 
     User.findOne({email: email, verifyToken: token, verifyTokenExpiration: {$gt: Date.now()}})
         .then(user => {
