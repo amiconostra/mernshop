@@ -67,34 +67,44 @@ exports.postRegister = (req, res, next) => {
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
 
-    User.findOne({$or: [{email: email}, {username: username}]})
-        .then(user => {
-            if(user) {
-                req.flash('error', 'Username or Email Already Exists!');
-                return res.redirect('/register');
-            }
+    crypto.randomBytes(32, (err, buffer) => {
+        if(err) {
+            console.log(err);
+            req.flash('error', 'Unknown Error');
+            return res.redirect('/register');
+        }
 
-            return bcrypt.hash(password, 12)
-                .then(hashedPassword => {
-                    const newUser = new User({email: email, firstName: firstName, lastName: lastName, username: username, password: hashedPassword});
-                    return newUser.save();
-                })
-                .then(result => {
-                    req.flash('success', 'User successfully registered! Check your Email for Verification!');
-                    res.redirect('/login');
-                    return mailTransporter.sendMail({
-                        to: email,
-                        from: config.mail.general.from,
-                        subject: 'Registration Successful!',
-                        html: `<h1>You Successfully Signed Up!</h1>
-                            <p>Email Verification</p>
-                            <p>Click <a href="${config.server.url}/verify">${config.server.url}/verify</a> to Verify your Email</p>
-                        `
-                    });
-                })
-                .catch(err => console.log(err));
-        })
-        .catch(err => console.log(err));
+        const token = buffer.toString('hex');
+
+        User.findOne({$or: [{email: email}, {username: username}]})
+            .then(user => {
+                if(user) {
+                    req.flash('error', 'Username or Email Already Exists!');
+                    return res.redirect('/register');
+                }
+
+                return bcrypt.hash(password, 12)
+                    .then(hashedPassword => {
+                        const newUser = new User({email: email, firstName: firstName, lastName: lastName, username: username, password: hashedPassword, verifyToken: token, verifyTokenExpiration: Date.now() + 600000});
+                        return newUser.save();
+                    })
+                    .then(result => {
+                        req.flash('success', 'User successfully registered! Check your Email for Verification!');
+                        res.redirect('/login');
+                        return mailTransporter.sendMail({
+                            to: email,
+                            from: config.mail.general.from,
+                            subject: 'Registration Successful!',
+                            html: `<h1>You Successfully Signed Up!</h1>
+                                <p>Email Verification</p>
+                                <p>Click <a href="${config.server.url}/verify/${token}?userId=${result._id}">${config.server.url}/verify/${token}?userId=${result._id}</a> To Verify Your Email</p>
+                            `
+                        });
+                    })
+                    .catch(err => console.log(err));
+            })
+            .catch(err => console.log(err));
+    });
 };
 
 exports.postLogout = (req, res, next) => {
@@ -116,9 +126,9 @@ exports.getReset = (req, res, next) => {
 exports.postReset = (req, res, next) => {
     const email = req.body.email;
 
-    // Generate Random Token
     crypto.randomBytes(32, (err, buffer) => {
         if(err) {
+            console.log(err);
             req.flash('error', 'Unknown Error');
             return res.redirect('/reset');
         }
@@ -142,14 +152,14 @@ exports.postReset = (req, res, next) => {
                             from: config.mail.general.from,
                             subject: 'Password Reset',
                             html: `
-                            <p>Requested Password Reset</p>
-                            <p>Click <a href="${config.server.url}/reset/${token}">LINK</a> To Reset password</p>
+                                <p>Requested Password Reset</p>
+                                <p>Click <a href="${config.server.url}/reset/${token}">LINK</a> To Reset password</p>
                             `
                         });
                     })
-                    .catch(error => console.log(error));
+                    .catch(err => console.log(err));
             })
-            .catch(error => console.log(error));
+            .catch(err => console.log(err));
     });
 };
 
@@ -172,7 +182,7 @@ exports.getResetPassword = (req, res, next) => {
                 resetToken: token
             });
         })
-        .catch(error => console.log(error));
+        .catch(err => console.log(err));
 };
 
 exports.postResetPassword = (req, res, next) => {
@@ -200,9 +210,9 @@ exports.postResetPassword = (req, res, next) => {
                     req.flash('success', 'Password Successfully Reset');
                     res.redirect('/login');
                 })
-                .catch(error => console.log(error));
+                .catch(err => console.log(err));
         })
-        .catch(error => console.log(error));
+        .catch(err => console.log(err));
 };
 
 exports.getVerifyEmail = (req, res, next) => {
@@ -217,7 +227,6 @@ exports.getVerifyEmail = (req, res, next) => {
 exports.postVerifyEmail = (req, res, next) => {
     const email = req.body.email;
 
-    // Generate Random Token
     crypto.randomBytes(32, (err, buffer) => {
         if(err) {
             console.log(err);
@@ -249,16 +258,16 @@ exports.postVerifyEmail = (req, res, next) => {
                             from: config.mail.general.from,
                             subject: 'Email Verification',
                             html: `
-                            <p>Requested Email Verification</p>
-                            <p>Token: ${token}</p>
-                            <p>Click <a href="${config.server.url}/verify/${token}?userId=${user._id}">${config.server.url}/verify/${token}?userId=${user._id}</a> To Verify Your Email</p>
-                            <p>Or Do it manually at <a href="${config.server.url}/verify/email">${config.server.url}/verify/email</a></p>
+                                <p>Requested Email Verification</p>
+                                <p>Token: ${token}</p>
+                                <p>Click <a href="${config.server.url}/verify/${token}?userId=${user._id}">${config.server.url}/verify/${token}?userId=${user._id}</a> To Verify Your Email</p>
+                                <p>Or Do it manually at <a href="${config.server.url}/verify/email">${config.server.url}/verify/email</a></p>
                             `
                         });
                     })
-                    .catch(error => console.log(error));
+                    .catch(err => console.log(err));
             })
-            .catch(error => console.log(error));
+            .catch(err => console.log(err));
     });
 };
 
@@ -287,7 +296,7 @@ exports.getVerifyToken = (req, res, next) => {
                     res.redirect('/login');
                 });
         })
-        .catch(error => console.log(error));
+        .catch(err => console.log(err));
 };
 
 exports.getVerifyAccount = (req, res, next) => {
@@ -313,13 +322,13 @@ exports.postVerifyAccount = (req, res, next) => {
             user.verified = true;
             user.verifyToken = undefined;
             user.verifyTokenExpiration = undefined;
+            req.flash('success', 'Email has been Verified');
             return user.save()
                 .then(result => {
-                    req.flash('success', 'Email has been Verified');
                     res.redirect('/login');
                 });
         })
-        .catch(error => console.log(error));
+        .catch(err => console.log(err));
 };
 
 exports.getConfirmation = (req, res, next) => {
