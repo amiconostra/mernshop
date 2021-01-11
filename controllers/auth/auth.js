@@ -4,7 +4,6 @@ const rootdir = require('../../helpers/rootdir');
 const config = require(path.join(rootdir, 'config.json'));
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
-const flashParser = require(path.join(rootdir, 'helpers', 'flash-parser'));
 
 const mailTransporter = nodemailer.createTransport(config.mail.smtp);
 
@@ -12,13 +11,10 @@ const mailTransporter = nodemailer.createTransport(config.mail.smtp);
 const User = require(path.join(rootdir, 'models/user'));
 
 exports.getLogin = (req, res, next) => {
-    const errorFlash = req.flash('error')[0];
-    const successFlash = req.flash('success')[0];
-    let flashMessage = flashParser(errorFlash, successFlash);
-
     res.render(path.join(config.theme.name, 'auth/login'), {
         pageTitle: 'Login',
-        flashMessage: flashMessage
+        flashSuccess: req.flash('success')[0],
+        flashError: req.flash('error')[0]
     });
 };
 
@@ -55,14 +51,11 @@ exports.postLogin = (req, res, next) => {
         });
 };
 
-exports.getRegister = (req, res, next) => {
-    const errorFlash = req.flash('error')[0];
-    const successFlash = req.flash('success')[0];
-    let flashMessage = flashParser(errorFlash, successFlash);
-    
+exports.getRegister = (req, res, next) => {   
     res.render(path.join(config.theme.name, 'auth/register'), {
         pageTitle: 'Register',
-        flashMessage: flashMessage
+        flashSuccess: req.flash('success')[0],
+        flashError: req.flash('error')[0]
     });
 };
 
@@ -111,14 +104,12 @@ exports.postLogout = (req, res, next) => {
 };
 
 exports.getReset = (req, res, next) => {
-    const errorFlash = req.flash('error')[0];
-    const successFlash = req.flash('success')[0];
-    let flashMessage = flashParser(errorFlash, successFlash);
 
     res.render(path.join(config.theme.name, 'auth/verify-reset'), {
         pageTitle: 'Reset Password',
         verifyEmail: false,
-        flashMessage: flashMessage
+        flashSuccess: req.flash('success')[0],
+        flashError: req.flash('error')[0]
     });
 };
 
@@ -164,9 +155,6 @@ exports.postReset = (req, res, next) => {
 
 exports.getResetPassword = (req, res, next) => {
     const token = req.params.token;
-    const errorFlash = req.flash('error')[0];
-    const successFlash = req.flash('success')[0];
-    let flashMessage = flashParser(errorFlash, successFlash);
 
     User.findOne({resetToken: token, resetTokenExpiration: {$gt: Date.now()}})
         .then(user => {
@@ -178,7 +166,8 @@ exports.getResetPassword = (req, res, next) => {
             res.render(path.join(config.theme.name, 'auth/reset'), {
                 pageTitle: 'Reset Password',
                 path: '/auth/reset-password',
-                flashMessage: flashMessage,
+                flashSuccess: req.flash('success')[0],
+                flashError: req.flash('error')[0],
                 userId: user._id.toString(),
                 resetToken: token
             });
@@ -217,14 +206,11 @@ exports.postResetPassword = (req, res, next) => {
 };
 
 exports.getVerifyEmail = (req, res, next) => {
-    const errorFlash = req.flash('error')[0];
-    const successFlash = req.flash('success')[0];
-    let flashMessage = flashParser(errorFlash, successFlash);
-
     res.render(path.join(config.theme.name, 'auth/verify-reset'), {
         pageTitle: 'Reset Password',
         verifyEmail: true,
-        flashMessage: flashMessage
+        flashSuccess: req.flash('success')[0],
+        flashError: req.flash('error')[0]
     });
 };
 
@@ -305,14 +291,11 @@ exports.getVerifyToken = (req, res, next) => {
 };
 
 exports.getVerifyAccount = (req, res, next) => {
-    const errorFlash = req.flash('error')[0];
-    const successFlash = req.flash('success')[0];
-    let flashMessage = flashParser(errorFlash, successFlash);
-
     res.render(path.join(config.theme.name, 'auth/verify-email'), {
         pageTitle: 'Verify Email',
         path: '/account/verify',
-        flashMessage: flashMessage
+        flashSuccess: req.flash('success')[0],
+        flashError: req.flash('error')[0]
     });
 };
 

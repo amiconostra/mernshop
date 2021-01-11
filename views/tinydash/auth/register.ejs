@@ -13,10 +13,14 @@
                 </g>
               </svg>
             </a>
-            <% if(flashMessage) { %>
-                <div class="alert <%= (flashMessage[0] == 'success') ? 'alert-success' : 'alert-danger' %>" role="alert">
-                  <h4 class="alert-heading"><%= flashMessage[1] %></h4>
-                </div>
+            <% if(flashSuccess || flashError) { %>
+              <div class="alert <%= (flashSuccess) ? 'alert-success' : 'alert-danger' %>" role="alert">
+                <% if(flashSuccess) { %>
+                  <h4 class="alert-heading"><%= flashSuccess %></h4>
+                <% } else { %>
+                  <h4 class="alert-heading"><%= flashError %></h4>
+                <% } %>
+              </div>
             <% } %>
             <h2 class="my-3">Register</h2>
           </div>
