@@ -13,15 +13,7 @@
                 </g>
               </svg>
             </a>
-            <% if(success || error) { %>
-              <div class="alert <%= (success) ? 'alert-success' : 'alert-danger' %>" role="alert">
-                <% if(success) { %>
-                  <h4 class="alert-heading"><%= success %></h4>
-                <% } else { %>
-                  <h4 class="alert-heading"><%= error %></h4>
-                <% } %>
-              </div>
-            <% } %>
+            <%- include('../includes/alert-block.ejs') %>
             <h2 class="my-3">Register</h2>
           </div>
           <div class="form-group">
