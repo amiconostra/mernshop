@@ -1,6 +1,7 @@
 const path = require('path');
 const rootdir = require('../../helpers/rootdir');
 const config = require(path.join(rootdir, 'config.json'));
+const { validationResult } = require('express-validator');
 
 // Models
 const Product = require(path.join(rootdir, 'models/product'));
@@ -22,7 +23,10 @@ exports.getAddProduct = (req, res, next) => {
         pageTitle: 'Add Product',
         path: '/dashboard/products/add',
         editing: false,
-        formAction: '/dashboard/products/add'
+        success: req.flash('success')[0],
+        error: req.flash('error')[0],
+        validationBox: false,
+        validationError: []
     });
 };
 
@@ -33,6 +37,20 @@ exports.postAddProduct = (req, res, next) => {
     const price = req.body.price;
     const stock = req.body.stock;
     const imageUrl = req.body.imageUrl;
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()) {
+        return res.render(path.join(config.theme.name, 'edit-product'), {
+            pageTitle: 'Add Product',
+            path: '/dashboard/products/add',
+            editing: false,
+            success: '',
+            error: errors.array()[0].msg,
+            product: {name: name, description: description, type: type, price: price, stock: stock, imageUrl: imageUrl},
+            validationBox: true,
+            validationError: errors.array()
+        });
+    }
     
     const product = new Product({name: name, description: description, type: type, price: price, stock: stock, imageUrl: imageUrl, userId: req.user});
     product.save()
@@ -56,11 +74,14 @@ exports.getEditProduct = (req, res, next) => {
                 return res.redirect('/dashboard/products');
             }
             res.render(path.join(config.theme.name, 'edit-product'), {
-                pageTitle: 'Add Product',
-                path: '/dashboard/products/add',
+                pageTitle: 'Edit Product',
+                path: '/dashboard/products/edit',
                 editing: editMode,
-                formAction: '/dashboard/products/edit',
-                product: product                
+                product: product,
+                success: req.flash('success')[0],
+                error: req.flash('error')[0],
+                validationBox: false,
+                validationError: []       
             });
         })
         .catch(err => console.log(err));
@@ -74,6 +95,20 @@ exports.postEditProduct = (req, res, next) => {
     const updatedPrice = req.body.price;
     const updatedStock = req.body.stock;
     const updatedImageUrl = req.body.imageUrl;
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()) {
+        return res.render(path.join(config.theme.name, 'edit-product'), {
+            pageTitle: 'Edit Product',
+            path: '/dashboard/products/edit',
+            editing: true,
+            success: '',
+            error: errors.array()[0].msg,
+            product: {_id: productId, name: updatedName, description: updatedDescription, type: updatedType, price: updatedPrice, stock: updatedStock, imageUrl: updatedImageUrl},
+            validationBox: true,
+            validationError: errors.array()
+        });
+    }
 
     Product.findById(productId)
         .then(product => {

@@ -29,5 +29,15 @@ exports.validate = (method) => {
                 body('confirmPassword', 'Passwords do not Match!').isLength({min: 1}).trim().custom((value, {req}) => value === req.body.password)
             ];
         }
+        case 'product': {
+            return [
+                body('name', 'Product title must be between 2-255 Characters, and cannot contain Special Characters').exists().isAlphanumeric().isLength({min: 2, max: 255}).trim(),
+                body('description', 'Description must be between 2-1000 Characters').exists().isLength({min: 2, max: 1000}).trim(),
+                body('type', 'Type must be between 2-255 Characters, and cannot contain Numbers or Special Characters').exists().isAlpha().isLength({min: 2, max: 255}).trim(),
+                body('price', 'Price can only be Float').exists().isFloat(),
+                body('stock', 'Stock can only be Number').exists().isNumeric(),
+                body('imageUrl', 'Image can only be a URL').exists().isURL()
+            ];
+        }
     }
 };
