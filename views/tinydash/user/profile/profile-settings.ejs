@@ -49,6 +49,7 @@
                     </div>
                   </div>
                   <hr class="my-4">
+                  <%- include('../../includes/alert-block.ejs') %>
                   <div class="form-row">
                     <div class="form-group col-md-6">
                       <label for="firstname">Firstname</label>
@@ -62,6 +63,10 @@
                   <div class="form-group">
                     <label for="inputEmail4">Email</label>
                     <input type="email" name="email" value="<%= user.email %>" class="form-control" id="inputEmail4" placeholder="<%= user.email %>">
+                  </div>
+                  <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" value="<%= user.username %>" id="username" class="form-control" placeholder="<%= user.username %>">
                   </div>
                   <div class="form-group">
                     <label for="inputPhoneNumber4">Phone Number</label>
@@ -91,7 +96,7 @@
                     <div class="form-group col-md-3">
                       <label for="inputState5">State</label>
                       <select name="state" id="inputState5" class="form-control">
-                        <option selected="" value="<%= user.location.state %>"><%= user.location.state %></option>
+                        <option selected="" value="<%= user.location.state %>"><%= states.fullName(user.location.state) %></option>
                         <%- include('../../includes/us-states-dropdown') %>
                       </select>
                     </div>
@@ -105,7 +110,7 @@
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="inputPassword4">Current Password</label>
-                        <input type="password" name="currentPassword" class="form-control" id="inputPassword5">
+                        <input type="password" name="password" class="form-control" id="inputPassword5">
                       </div>
                       <div class="form-group">
                         <label for="inputPassword5">New Password</label>

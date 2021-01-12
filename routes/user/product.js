@@ -17,7 +17,7 @@ router.post('/products/add', isAuth, inputValidator.validate('product'), product
 
 router.get('/products/edit/:productId', isAuth, productController.getEditProduct);
 
-router.post('/products/edit', inputValidator.validate('product'), isAuth, productController.postEditProduct);
+router.post('/products/edit', isAuth, inputValidator.validate('product'), productController.postEditProduct);
 
 router.post('/products/delete', isAuth, productController.deleteProduct);
 

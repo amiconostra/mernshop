@@ -21,28 +21,28 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    phoneNumber: Number,
     bio: String,
     location: {
         country: String,
         state: String,
-        address: String,
-        zip: Number
+        zip: Number,
+        address: String
     },
-    phoneNumber: Number,
     company: String,
     verified: {
         type: Boolean,
         required: true,
         default: false
     },
-    verifyToken: String,
-    verifyTokenExpiration: Date,
-    resetToken: String,
-    resetTokenExpiration: Date,
     sales: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: 'Order'
-    }
+    },
+    verifyToken: String,
+    verifyTokenExpiration: Date,
+    resetToken: String,
+    resetTokenExpiration: Date
 });
 
 module.exports = mongoose.model('User', userSchema);
