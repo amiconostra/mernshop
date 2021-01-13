@@ -65,7 +65,7 @@ exports.postProfileSettings = (req, res, next) => {
             newPassword: newPassword
         };
 
-        return res.render(path.join(config.theme.name, 'user', 'profile', 'profile-settings'), {
+        return res.status(422).render(path.join(config.theme.name, 'user', 'profile', 'profile-settings'), {
             pageTitle: 'Profile Settings',
             path: '/dashboard/profile-settings',
             user: input,
@@ -109,12 +109,21 @@ exports.postProfileSettings = (req, res, next) => {
                                 .then(result => {
                                     req.flash('success', 'User & Password has been updated!');
                                     res.redirect('/dashboard/profile-settings');
+                                })
+                                .catch(err => {
+                                    const error = new Error(err);
+                                    error.status = 500;
+                                    return next(error);
                                 });
                         }
                         req.flash('error', 'Invalid Current Password');
                         return res.redirect('/dashboard/profile-settings');
                     })
-                    .catch(err => console.log(err));
+                    .catch(err => {
+                        const error = new Error(err);
+                        error.status = 500;
+                        return next(error);
+                    });
             }
 
             return user.save()
@@ -123,5 +132,9 @@ exports.postProfileSettings = (req, res, next) => {
                     res.redirect('/dashboard/profile-settings');
                 });
         })
-        .catch(err => console.log(err)); 
+        .catch(err => {
+            const error = new Error(err);
+            error.status = 500;
+            return next(error);
+        });
 };

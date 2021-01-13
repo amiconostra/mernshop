@@ -11,13 +11,3 @@ exports.get404 = (req, res, next) => {
         path: '/404'
     });
 };
-
-exports.get500 = (err, req, res, next) => {
-    res.status(err.status || 500);
-    res.render(path.join(config.theme.name), 'error/500', {
-        pageTitle: '500',
-        path: '/500',
-        message: err.message,
-        error: {}
-    });
-};

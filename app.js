@@ -47,6 +47,13 @@ app.use(session({
 app.use(csrfProtection);
 app.use(flash());
 
+// Shared Across Views (Requests)
+app.use((req, res, next) => {
+    res.locals.isAuthenticated = req.session.isAuthenticated;
+    res.locals.csrfToken = req.csrfToken();
+    next();
+});
+
 // User Handler
 app.use((req, res, next) => {
     if(!req.session.user) {
@@ -55,23 +62,45 @@ app.use((req, res, next) => {
     
     User.findById(req.session.user._id)
         .then(user => {
+            if(!user) {
+                return next();
+            }
+            
             req.user = user;
             return next();
         })
         .catch(err => {
-            console.log(err);
+            next(new Error(err));
         });
-});
-
-// Shared Across Views (Requests)
-app.use((req, res, next) => {
-    res.locals.isAuthenticated = req.session.isAuthenticated;
-    res.locals.csrfToken = req.csrfToken();
-    next();
 });
 
 // Routes
 app.use('/', require('./routes/router'));
+
+// Internal Error Handler
+// Development Error Handler
+if (app.get('env') === 'development') {
+    app.use((err, req, res, next) => {
+        res.status(err.status || 500);
+        res.render(path.join(config.theme.name, 'error/500'), {
+            pageTitle: '500',
+            path: '/500',
+            message: err.message,
+            error: err
+        });
+    });
+}
+
+// Production Error Handler
+app.use((err, req, res, next) => {
+    res.status(err.status || 500);
+    res.render(path.join(config.theme.name, 'error/500'), {
+        pageTitle: '500',
+        path: '/500',
+        message: err.message,
+        error: {}
+    });
+});
 
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
     .then((result) => {

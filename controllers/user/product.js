@@ -15,7 +15,11 @@ exports.getProducts = (req, res, next) => {
                 products: products
             });
         })
-        .catch((err) => console.log(err));
+        .catch(err => {
+            const error = new Error(err);
+            error.status = 500;
+            return next(error);
+        });
 };
 
 exports.getAddProduct = (req, res, next) => {
@@ -40,7 +44,7 @@ exports.postAddProduct = (req, res, next) => {
     const errors = validationResult(req);
 
     if(!errors.isEmpty()) {
-        return res.render(path.join(config.theme.name, 'edit-product'), {
+        return res.status(422).render(path.join(config.theme.name, 'edit-product'), {
             pageTitle: 'Add Product',
             path: '/dashboard/products/add',
             editing: false,
@@ -57,7 +61,11 @@ exports.postAddProduct = (req, res, next) => {
         .then(result => {
             res.redirect('/dashboard/products');
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            const error = new Error(err);
+            error.status = 500;
+            return next(error);
+        });
 };
 
 exports.getEditProduct = (req, res, next) => {
@@ -84,7 +92,11 @@ exports.getEditProduct = (req, res, next) => {
                 validationError: []       
             });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            const error = new Error(err);
+            error.status = 500;
+            return next(error);
+        });
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -98,7 +110,7 @@ exports.postEditProduct = (req, res, next) => {
     const errors = validationResult(req);
 
     if(!errors.isEmpty()) {
-        return res.render(path.join(config.theme.name, 'edit-product'), {
+        return res.status(422).render(path.join(config.theme.name, 'edit-product'), {
             pageTitle: 'Edit Product',
             path: '/dashboard/products/edit',
             editing: true,
@@ -127,7 +139,11 @@ exports.postEditProduct = (req, res, next) => {
                     res.redirect('/dashboard/products');
                 });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            const error = new Error(err);
+            error.status = 500;
+            return next(error);
+        });
 };
 
 exports.deleteProduct = (req, res, next) => {
@@ -136,5 +152,9 @@ exports.deleteProduct = (req, res, next) => {
         .then(result => {
             res.redirect('/dashboard/products');
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            const error = new Error(err);
+            error.status = 500;
+            return next(error);
+        });
 };

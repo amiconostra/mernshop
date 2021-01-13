@@ -65,7 +65,9 @@ exports.postLogin = (req, res, next) => {
                 });
         })
         .catch(err => {
-            console.log(err);
+            const error = new Error(err);
+            error.status = 500;
+            return next(error);
         });
 };
 
@@ -137,9 +139,17 @@ exports.postRegister = (req, res, next) => {
                             `
                         });
                     })
-                    .catch(err => console.log(err));
+                    .catch(err => {
+                        const error = new Error(err);
+                        error.status = 500;
+                        return next(error);
+                    });
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+                const error = new Error(err);
+                error.status = 500;
+                return next(error);
+            });
     });
 };
 
@@ -210,9 +220,17 @@ exports.postReset = (req, res, next) => {
                             `
                         });
                     })
-                    .catch(err => console.log(err));
+                    .catch(err => {
+                        const error = new Error(err);
+                        error.status = 500;
+                        return next(error);
+                    });
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+                const error = new Error(err);
+                error.status = 500;
+                return next(error);
+            });
     });
 };
 
@@ -238,7 +256,11 @@ exports.getResetPassword = (req, res, next) => {
                 resetToken: token
             });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            const error = new Error(err);
+            error.status = 500;
+            return next(error);
+        });
 };
 
 exports.postResetPassword = (req, res, next) => {
@@ -271,9 +293,17 @@ exports.postResetPassword = (req, res, next) => {
                     req.flash('success', 'Password Successfully Reset');
                     res.redirect('/login');
                 })
-                .catch(err => console.log(err));
+                .catch(err => {
+                    const error = new Error(err);
+                    error.status = 500;
+                    return next(error);
+                });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            const error = new Error(err);
+            error.status = 500;
+            return next(error);
+        });
 };
 
 exports.getVerifyEmail = (req, res, next) => {
@@ -344,9 +374,17 @@ exports.postVerifyEmail = (req, res, next) => {
                             `
                         });
                     })
-                    .catch(err => console.log(err));
+                    .catch(err => {
+                        const error = new Error(err);
+                        error.status = 500;
+                        return next(error);
+                    });
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+                const error = new Error(err);
+                error.status = 500;
+                return next(error);
+            });
     });
 };
 
@@ -381,7 +419,11 @@ exports.getVerifyToken = (req, res, next) => {
                     res.redirect('/login');
                 });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            const error = new Error(err);
+            error.status = 500;
+            return next(error);
+        });
 };
 
 exports.getVerifyAccount = (req, res, next) => {
@@ -430,7 +472,11 @@ exports.postVerifyAccount = (req, res, next) => {
                     res.redirect('/login');
                 });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            const error = new Error(err);
+            error.status = 500;
+            return next(error);
+        });
 };
 
 exports.getConfirmation = (req, res, next) => {

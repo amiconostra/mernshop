@@ -9,6 +9,4 @@ const router = express.Router();
 
 router.use(errorController.get404);
 
-router.use(errorController.get500);
-
 module.exports = router;
