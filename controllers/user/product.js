@@ -40,8 +40,21 @@ exports.postAddProduct = (req, res, next) => {
     const type = req.body.type;
     const price = req.body.price;
     const stock = req.body.stock;
-    const imageUrl = req.body.imageUrl;
+    const image = req.file;
     const errors = validationResult(req);
+
+    if(!image) {
+        return res.status(422).render(path.join(config.theme.name, 'edit-product'), {
+            pageTitle: 'Add Product',
+            path: '/dashboard/products/add',
+            editing: false,
+            success: '',
+            error: 'Please attach an Image file',
+            product: {name: name, description: description, type: type, price: price, stock: stock},
+            validationBox: false,
+            validationError: []
+        });
+    }
 
     if(!errors.isEmpty()) {
         return res.status(422).render(path.join(config.theme.name, 'edit-product'), {
@@ -50,11 +63,13 @@ exports.postAddProduct = (req, res, next) => {
             editing: false,
             success: '',
             error: errors.array()[0].msg,
-            product: {name: name, description: description, type: type, price: price, stock: stock, imageUrl: imageUrl},
+            product: {name: name, description: description, type: type, price: price, stock: stock},
             validationBox: true,
             validationError: errors.array()
         });
     }
+
+    const imageUrl = image.path;
     
     const product = new Product({name: name, description: description, type: type, price: price, stock: stock, imageUrl: imageUrl, userId: req.user});
     product.save()
@@ -106,7 +121,7 @@ exports.postEditProduct = (req, res, next) => {
     const updatedType = req.body.type;
     const updatedPrice = req.body.price;
     const updatedStock = req.body.stock;
-    const updatedImageUrl = req.body.imageUrl;
+    const image = req.file;
     const errors = validationResult(req);
 
     if(!errors.isEmpty()) {
@@ -116,7 +131,7 @@ exports.postEditProduct = (req, res, next) => {
             editing: true,
             success: '',
             error: errors.array()[0].msg,
-            product: {_id: productId, name: updatedName, description: updatedDescription, type: updatedType, price: updatedPrice, stock: updatedStock, imageUrl: updatedImageUrl},
+            product: {_id: productId, name: updatedName, description: updatedDescription, type: updatedType, price: updatedPrice, stock: updatedStock},
             validationBox: true,
             validationError: errors.array()
         });
@@ -133,7 +148,9 @@ exports.postEditProduct = (req, res, next) => {
             product.type = updatedType;
             product.price = updatedPrice;
             product.stock = updatedStock;
-            product.imageUrl = updatedImageUrl;
+            if(image) {
+                product.imageUrl = image.path;
+            }
             product.save()
                 .then(result => {
                     res.redirect('/dashboard/products');

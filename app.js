@@ -8,6 +8,7 @@ const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const flash = require('connect-flash');
 const csrf = require('csurf');
+const multer = require('multer');
 
 // Models
 const User = require('./models/user');
@@ -24,6 +25,24 @@ const store = new MongoDBStore({
 // CSRF Settings
 const csrfProtection = csrf();
 
+// Multer Settings
+const fileStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/tinydash/assets/products');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' +file.originalname);
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    if(file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg') {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+}
+
 // Express APP
 const app = express();
 
@@ -37,6 +56,7 @@ app.use(expressLayouts);
 app.use(express.static(path.join('public', config.theme.name)));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
+app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image'));
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,

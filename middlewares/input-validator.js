@@ -35,8 +35,7 @@ exports.validate = (method) => {
                 body('description', 'Description must be between 2-1000 Characters').exists().isLength({min: 2, max: 1000}).trim(),
                 body('type', 'Type must be between 2-255 Characters, and cannot contain Numbers or Special Characters').exists().matches('^[a-zA-Z_ ]*$').isLength({min: 2, max: 255}).trim(),
                 body('price', 'Price can only be Float').exists().isFloat(),
-                body('stock', 'Stock can only be Number').exists().isNumeric(),
-                body('imageUrl', 'Image can only be a URL').exists().isURL()
+                body('stock', 'Stock can only be Number').exists().isNumeric()
             ];
         }
         case 'profile': {
