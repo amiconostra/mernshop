@@ -54,6 +54,7 @@ app.set('layout', path.join(config.theme.name, 'layout'));
 // Express Middlewares
 app.use(expressLayouts);
 app.use(express.static(path.join('public', config.theme.name)));
+app.use('/public/' + config.theme.name, express.static(path.join('public', config.theme.name)));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image'));
