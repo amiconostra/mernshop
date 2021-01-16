@@ -76,23 +76,22 @@ app.use((req, res, next) => {
 });
 
 // User Handler
-app.use((req, res, next) => {
+app.use(async(req, res, next) => {
     if(!req.session.user) {
         return next();
     }
     
-    User.findById(req.session.user._id)
-        .then(user => {
-            if(!user) {
-                return next();
-            }
-            
-            req.user = user;
+    try {
+        const user = await User.findById(req.session.user._id);
+        if(!user) {
             return next();
-        })
-        .catch(err => {
-            next(new Error(err));
-        });
+        }
+        
+        req.user = user;
+        return next();
+    } catch(err) {
+        next(new Error(err));
+    }
 });
 
 // Routes

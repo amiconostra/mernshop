@@ -30,7 +30,7 @@ exports.getProfileSettings = (req, res, next) => {
     });
 };
 
-exports.postProfileSettings = (req, res, next) => {
+exports.postProfileSettings = async(req, res, next) => {
     const updatedFirstName = req.body.firstName;
     const updatedLastName = req.body.lastName;
     const updatedEmail = req.body.email;
@@ -76,65 +76,47 @@ exports.postProfileSettings = (req, res, next) => {
             validationError: errors.array()
         });
     }
-    
-    User.findOne({_id: req.user._id})
-        .then(user => {
-            if(!user) {
-                req.flash('error', 'Invalid Session');
-                return res.redirect('/login');
-            }
 
-            user.firstName = updatedFirstName;
-            user.lastName = updatedLastName;
-            user.email = updatedEmail;
-            user.username = updatedUsername;
-            user.phoneNumber = updatedPhoneNumber;
-            user.location.country = updatedCountry;
-            user.location.state = updatedState;
-            user.location.address = updatedAddress;
-            user.location.zip = updatedZip;
-            user.bio = updatedBio;
-            user.company = updatedCompany;
+    try {
+        const user = await User.findOne({_id: req.user._id});
+        if(!user) {
+            req.flash('error', 'Invalid Session');
+            return res.redirect('/login');
+        }
 
-            // Updated Password
-            if(currentPassword && newPassword) {
-                return bcrypt.compare(currentPassword, user.password)
-                    .then(matches => {
-                        if(matches) {
-                            return bcrypt.hash(newPassword, 12)
-                                .then(hashedPassword => {
-                                    user.password = hashedPassword;
-                                    return user.save();
-                                })
-                                .then(result => {
-                                    req.flash('success', 'User & Password has been updated!');
-                                    res.redirect('/dashboard/profile-settings');
-                                })
-                                .catch(err => {
-                                    const error = new Error(err);
-                                    error.status = 500;
-                                    return next(error);
-                                });
-                        }
-                        req.flash('error', 'Invalid Current Password');
-                        return res.redirect('/dashboard/profile-settings');
-                    })
-                    .catch(err => {
-                        const error = new Error(err);
-                        error.status = 500;
-                        return next(error);
-                    });
-            }
+        user.firstName = updatedFirstName;
+        user.lastName = updatedLastName;
+        user.email = updatedEmail;
+        user.username = updatedUsername;
+        user.phoneNumber = updatedPhoneNumber;
+        user.location.country = updatedCountry;
+        user.location.state = updatedState;
+        user.location.address = updatedAddress;
+        user.location.zip = updatedZip;
+        user.bio = updatedBio;
+        user.company = updatedCompany;
 
-            return user.save()
-                .then(result => {
-                    req.flash('success', 'User has been updated!');
-                    res.redirect('/dashboard/profile-settings');
-                });
-        })
-        .catch(err => {
-            const error = new Error(err);
-            error.status = 500;
-            return next(error);
-        });
+        // Updated Password
+        if(currentPassword && newPassword) {
+            const matches = await bcrypt.compare(currentPassword, user.password);
+            if(matches) {
+                const hashedPassword = await bcrypt.hash(newPassword, 12);
+                user.password = hashedPassword;
+                await user.save();
+                req.flash('success', 'User & Password has been updated!');
+                return res.redirect('/dashboard/profile-settings');
+            } else {
+                req.flash('error', 'Invalid Current Password');
+                return res.redirect('/dashboard/profile-settings');
+            }  
+        }
+
+        await user.save();
+        req.flash('success', 'User has been updated!');
+        return res.redirect('/dashboard/profile-settings');
+    } catch(err) {
+        const error = new Error(err);
+        error.status = 500;
+        return next(error);
+    }
 };
