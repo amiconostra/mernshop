@@ -11,4 +11,6 @@ const router = express.Router();
 
 router.get('/user/:username', userController.getUser);
 
+router.get('/user/:username/product/:productId', userController.getProduct);
+
 module.exports = router;

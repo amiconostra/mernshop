@@ -1,0 +1,64 @@
+<body class="vertical light">
+    <div class="wrapper">
+      <%- include('../../includes/nav.ejs') %>
+      <main role="main" class="main-content ml-0">
+        <div class="container-fluid">
+          <div class="row justify-content-center">
+            <div class="col-12">
+              <h2 class="h3 mb-4 page-title">Profile</h2>
+              <div class="row mt-5 align-items-center">
+                <div class="col-md-3 text-center mb-5">
+                  <div class="avatar avatar-xl">
+                    <img src="/assets/avatars/face-1.jpg" alt="..." class="avatar-img rounded-circle">
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="row align-items-center">
+                    <div class="col-md-7">
+                    <% if(user.firstName && user.lastName) {%>
+                      <h4 class="mb-1"><%= user.firstName %>, <%= user.lastName %></h4>
+                    <% } else { %>
+                      <h4 class="mb-1"><%= user.username %></h4>
+                    <% } %>
+                      <p class="small mb-3"><span class="badge badge-dark"><%= (user.location.state) ? states.fullName(user.location.state) + ',' : '' %> <%= user.location.country %></span></p>
+                    </div>
+                  </div>
+                  <div class="row mb-4">
+                    <div class="col-md-7">
+                      <p class="text-muted"> <%= user.bio %> </p>
+                    </div>
+                    <div class="col">
+                      <p class="small mb-0 text-muted"><%= user.company %></p>
+                      <p class="small mb-0 text-muted"><%= user.location.address %></p>
+                      <p class="small mb-0 text-muted"><%= user.phoneNumber %></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h3>Shop</h3>
+              <p class="text-muted">Buy Products from <%= user.username %></p>
+              <div class="card-deck my-4 justify-content-center">
+                <div class="row product-card">
+                    <div class="card mb-4 shadow">
+                        <div class="card-body text-center my-4">
+                            <img class="product-detail-image" src="/<%= product.imageUrl %>" alt="<%= product.name %>">
+                            <a href="#">
+                                <h3 class="h5 mt-4 mb-0">Product Name: <%= product.name %></h3>
+                            </a>
+                            <p class="text-muted">Type: <%= product.type %></p>
+                            <span class="h1 mb-0">Price: $<%= product.price %></span>
+                            <p class="text-muted">Stock: <%= product.stock %></p>
+                            <ul class="list-unstyled">
+                                <p>Product Description: <%= product.description %></p>
+                            </ul>
+                            <button type="button" class="btn mb-2 btn-primary btn-lg">Buy</button>
+                        </div> <!-- .card-body -->
+                    </div> <!-- .card -->
+                </div>
+              </div> <!-- .card-group -->
+            </div> <!-- /.col-12 -->
+          </div> <!-- .row -->
+        </div> <!-- .container-fluid -->
+      </main> <!-- main -->
+    </div> <!-- .wrapper -->
+</body>
