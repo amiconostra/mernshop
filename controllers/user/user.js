@@ -30,5 +30,34 @@ exports.getUser = async(req, res, next) => {
         error.status = 500;
         next(error);
     }
+}
 
+exports.getProduct = async(req, res, next) => {
+    const username = req.params.username;
+    const productId = req.params.productId;
+
+    try {
+        const user = await User.findOne({username: username});
+        if(!user) {
+            req.flash('error', 'User not found');
+            res.redirect('/login');
+        }
+
+        const product = await Product.findOne({_id: productId, userId: user._id});
+        if(!product) {
+            req.flash('error', 'Product not found');
+            res.redirect(`/user/${username}`);
+        }
+
+        res.render(path.join(config.theme.name, 'user', 'profile', 'product-details'), {
+            pageTitle: user.username,
+            user: user,
+            product: product,
+            states: states
+        });
+    } catch(err) {
+        const error = new Error(err);
+        error.status = 500;
+        next(error);
+    }
 }

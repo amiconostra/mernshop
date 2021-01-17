@@ -5,3 +5,12 @@
 .product-image img {
     width: 100%;
 }
+
+.product-card {
+    width: 1500px;
+    height: 500px;
+}
+
+.product-detail-image img {
+    width: 100%;
+}
