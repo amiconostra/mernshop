@@ -277,7 +277,7 @@ exports.postResetPassword = async(req, res, next) => {
 
 exports.getVerifyEmail = (req, res, next) => {
     res.render(path.join(config.theme.name, 'auth/verify-reset'), {
-        pageTitle: 'Reset Password',
+        pageTitle: 'Verify Email',
         path: '/verify',
         verifyEmail: true,
         success: req.flash('success')[0],
