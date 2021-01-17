@@ -7,6 +7,7 @@ const indexRoute = require('./home/index');
 const dashboardRoutes = require('./user/dashboard');
 const productRoutes = require('./user/product');
 const profileRoutes = require('./user/profile');
+const userRoutes = require('./user/user');
 
 // Auth Routes
 const authRoutes = require('./auth/auth');
@@ -24,6 +25,7 @@ router.use(indexRoute);
 router.use('/dashboard', dashboardRoutes);
 router.use('/dashboard', productRoutes);
 router.use('/dashboard', profileRoutes);
+router.use(userRoutes);
 
 // Auth Routes
 router.use(authRoutes);
