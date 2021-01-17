@@ -84,6 +84,21 @@ exports.postProfileSettings = async(req, res, next) => {
             return res.redirect('/login');
         }
 
+        // Checks if Username or Email is taken
+        const emailExists = await User.findOne({_id: {$ne: req.user._id}, email: updatedEmail});
+        const usernameExists = await User.findOne({_id: {$ne: req.user._id}, username: updatedUsername});
+
+        if(emailExists && usernameExists) {
+            req.flash('error', 'Username or Email is already taken');
+            return res.redirect('/dashboard/profile-settings');
+        } else if(emailExists) {
+            req.flash('error', 'Email is already taken');
+            return res.redirect('/dashboard/profile-settings');
+        } else if(usernameExists) {
+            req.flash('error', 'Username is already taken');
+            return res.redirect('/dashboard/profile-settings');
+        }
+
         user.firstName = updatedFirstName;
         user.lastName = updatedLastName;
         user.email = updatedEmail;
