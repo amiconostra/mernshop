@@ -13,4 +13,8 @@ router.get('/user/:username', userController.getUser);
 
 router.get('/user/:username/product/:productId', userController.getProduct);
 
+router.get('/checkout/:productId', userController.getCheckout);
+
+router.post('/checkout', inputValidator.validate('checkout'), userController.postCheckout);
+
 module.exports = router;

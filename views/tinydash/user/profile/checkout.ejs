@@ -1,0 +1,71 @@
+<body class="light ">
+    <div class="wrapper vh-100">
+      <%- include('../../includes/nav.ejs') %>
+      <div class="row align-items-center h-100">
+        <form class="col-lg-6 col-md-8 col-10 mx-auto" action="/checkout" method="POST">
+          <div class="mx-auto text-center my-4">
+            <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="/">
+              <svg version="1.1" id="logo" class="navbar-brand-img brand-md" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 120 120" xml:space="preserve">
+                <g>
+                  <polygon class="st0" points="78,105 15,105 24,87 87,87 	" />
+                  <polygon class="st0" points="96,69 33,69 42,51 105,51 	" />
+                  <polygon class="st0" points="78,33 15,33 24,15 87,15 	" />
+                </g>
+              </svg>
+            </a>
+            <%- include('../../includes/alert-block.ejs') %>
+            <h2 class="my-3">Checkout</h2>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="inputEmail">Email</label>
+                <input name="email" value="<%= input.email %>" type="email" class="form-control <%= (validationBox && validationError.find(err => err.param !== 'email')) ? 'is-valid' : '' %> <%= validationError.find(err => err.param === 'email') ? 'is-invalid' : '' %>" id="inputEmail" placeholder="Email Address" required>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="firstname">Firstname</label>
+                  <input name="firstName" value="<%= input.firstName %>" type="text" id="firstname" class="form-control <%= (validationBox && validationError.find(err => err.param !== 'firstName')) ? 'is-valid' : '' %> <%= validationError.find(err => err.param === 'firstName') ? 'is-invalid' : '' %>" placeholder="First Name" required>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="lastname">Lastname</label>
+                  <input name="lastName" value="<%= input.lastName %>" type="text" id="lastname" class="form-control <%= (validationBox && validationError.find(err => err.param !== 'lastName')) ? 'is-valid' : '' %> <%= validationError.find(err => err.param === 'lastName') ? 'is-invalid' : '' %>" placeholder="Last name" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="quantity">Quantity</label>
+                <input name="quantity" value="<%= input.quantity %>" type="number" id="quantity" class="form-control <%= (validationBox && validationError.find(err => err.param !== 'quantity')) ? 'is-valid' : '' %> <%= validationError.find(err => err.param === 'quantity') ? 'is-invalid' : '' %>" placeholder="Quantity" required>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="card mb-4 shadow product product-image">
+                <div class="card-body text-center my-4">
+                    <a href="/user/<%= seller.username %>/product/<%= product._id %>">
+                        <h3 class="h5 mt-4 mb-0"><%= product.name %></h3>
+                    </a>
+                    <p class="text-muted">Type: <%= product.type %></p>
+                    <span class="h1 mb-0">$<%= product.price %></span>
+                    <p class="text-muted" id="quantityOut">Quantity: </p>
+                </div> <!-- .card-body -->
+              </div> <!-- .card -->
+            </div>
+            <div>
+              
+            </div>
+          </div>
+          <hr class="my-4">
+          <button class="btn btn-lg btn-primary btn-block" type="submit">Purchase</button>
+          <p class="mt-3 mb-3 text-center"><strong><a href="/user/<%= seller.username %>"><%= seller.username %>'s shop</a></strong></p>
+          <p class="mt-5 mb-3 text-muted text-center">© 2021</p>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <input type="hidden" name="productId" value="<%= product._id %>">
+        </form>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script>
+      $("#quantity").on('input', function() {
+        $("#quantityOut").text('Quantity: ' + $("#quantity").val());
+      });
+    </script>
+</body>

@@ -56,5 +56,13 @@ exports.validate = (method) => {
                 body('company', 'Company name must be valid, and less than 32 Characters').optional({checkFalsy: true}).isLength({max: 32}).trim()
             ];
         }
+        case 'checkout': {
+            return [
+                body('email', 'Invalid Email Address').exists().isLength({max: 64}).isEmail().normalizeEmail().trim(),
+                body('firstName', 'First Name must be between 2-26 Characters, and can only contain Letters').exists().matches('^[a-zA-Z_ ]*$').isLength({min: 2, max: 26}).trim(),
+                body('lastName', 'Last Name must be between 2-26 Characters, and can only contain Letters').exists().matches('^[a-zA-Z_ ]*$').isLength({min: 2, max: 26}).trim(),
+                body('quantity', 'Quantity can only be Number').exists().isNumeric()
+            ];
+        }
     }
 };
