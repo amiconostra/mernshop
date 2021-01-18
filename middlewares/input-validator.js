@@ -35,7 +35,7 @@ exports.validate = (method) => {
                 body('description', 'Description must be between 2-1000 Characters').exists().isLength({min: 2, max: 1000}).trim(),
                 body('type', 'Type must be between 2-255 Characters, and cannot contain Numbers or Special Characters').exists().matches('^[a-zA-Z_ ]*$').isLength({min: 2, max: 255}).trim(),
                 body('price', 'Price can only be Float').exists().isFloat(),
-                body('stock', 'Stock can only be Number').exists().isNumeric()
+                body('stock', 'Stock can only be Number').exists().isInt()
             ];
         }
         case 'profile': {
@@ -61,7 +61,7 @@ exports.validate = (method) => {
                 body('email', 'Invalid Email Address').exists().isLength({max: 64}).isEmail().normalizeEmail().trim(),
                 body('firstName', 'First Name must be between 2-26 Characters, and can only contain Letters').exists().matches('^[a-zA-Z_ ]*$').isLength({min: 2, max: 26}).trim(),
                 body('lastName', 'Last Name must be between 2-26 Characters, and can only contain Letters').exists().matches('^[a-zA-Z_ ]*$').isLength({min: 2, max: 26}).trim(),
-                body('quantity', 'Quantity can only be Number').exists().isNumeric()
+                body('quantity', 'Quantity can only be Number').exists().isInt().custom((value, {req}) => value > 0)
             ];
         }
     }

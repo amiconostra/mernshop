@@ -8,7 +8,6 @@ const states = require('us-state-converter');
 const User = require(path.join(rootdir, 'models', 'user'));
 const Product = require(path.join(rootdir, 'models', 'product'));
 const Order = require(path.join(rootdir, 'models', 'order'));
-const Sale = require(path.join(rootdir, 'models', 'sale'));
 
 exports.getUser = async(req, res, next) => {
     const username = req.params.username;
@@ -22,7 +21,7 @@ exports.getUser = async(req, res, next) => {
 
         const products = await Product.find({userId: user._id});
 
-        res.render(path.join(config.theme.name, 'user', 'profile', 'user'), {
+        res.render(path.join(config.theme.name, 'user', 'user'), {
             pageTitle: user.username,
             user: user,
             products: products,
@@ -52,11 +51,13 @@ exports.getProduct = async(req, res, next) => {
             res.redirect(`/user/${username}`);
         }
 
-        res.render(path.join(config.theme.name, 'user', 'profile', 'product-details'), {
+        res.render(path.join(config.theme.name, 'user', 'product-details'), {
             pageTitle: user.username,
             user: user,
             product: product,
-            states: states
+            states: states,
+            success: req.flash('success')[0],
+            error: req.flash('error')[0]
         });
     } catch(err) {
         const error = new Error(err);
@@ -72,7 +73,12 @@ exports.getCheckout = async(req, res, next) => {
         const product = await Product.findOne({_id: productId}).populate('userId', '-password');
         const seller = product.userId;
 
-        res.render(path.join(config.theme.name, 'user', 'profile', 'checkout'), {
+        if(product.stock <= 0) {
+            req.flash('error', 'out of stock');
+            return res.redirect(`/user/${seller.username}/product/${product._id}`);
+        }
+
+        res.render(path.join(config.theme.name, 'user', 'checkout'), {
             pageTitle: 'Checkout',
             path: '/checkout',
             seller: seller,
@@ -104,7 +110,7 @@ exports.postCheckout = async(req, res, next) => {
         const seller = await User.findOne({_id: product.userId}).select('-password');
 
         if(!errors.isEmpty()) {
-            return res.status(422).render(path.join(config.theme.name, 'user', 'profile', 'checkout'), {
+            return res.status(422).render(path.join(config.theme.name, 'user', 'checkout'), {
                 pageTitle: 'Checkout',
                 path: '/checkout',
                 seller: seller,
@@ -117,8 +123,13 @@ exports.postCheckout = async(req, res, next) => {
             });
         }
 
+        if(product.stock <= 0) {
+            req.flash('error', 'out of stock');
+            return res.redirect(`/user/${seller.username}/product/${product._id}`);
+        }
+
         if(quantity > product.stock) {
-            return res.status(422).render(path.join(config.theme.name, 'user', 'profile', 'checkout'), {
+            return res.status(422).render(path.join(config.theme.name, 'user', 'checkout'), {
                 pageTitle: 'Checkout',
                 path: '/checkout',
                 seller: seller,
@@ -139,12 +150,19 @@ exports.postCheckout = async(req, res, next) => {
         const sellerLocation = seller.location;
         const sellerPhoneNumber = seller.phoneNumber;
 
+        // Order Details
+        const totalPrice = quantity * product.price;
+
         const sellerInfo = {userId: sellerId, email: sellerEmail, firstName: sellerFirstName, lastName: sellerLastName, phoneNumber: sellerPhoneNumber, location: sellerLocation};
         const buyerInfo = {email: buyerEmail, firstName: buyerFirstName, lastName: buyerLastName};
         const orderInfo = {
-            products: {
+            order: {
                 product: product,
-                quantity: quantity
+                quantity: quantity,
+                purchaseDate: new Date(),
+                totalPrice: totalPrice,
+                payment: 'Paypal',
+                status: 'pending'
             },
             seller: sellerInfo,
             buyer: buyerInfo

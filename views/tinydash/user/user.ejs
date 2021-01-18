@@ -1,6 +1,6 @@
 <body class="vertical light">
     <div class="wrapper">
-      <%- include('../../includes/nav.ejs') %>
+      <%- include('../includes/nav.ejs') %>
       <main role="main" class="main-content ml-0">
         <div class="container-fluid">
           <div class="row justify-content-center">
@@ -120,7 +120,7 @@
                                 <ul class="list-unstyled">
                                     <p><%= product.description %></p>
                                 </ul>
-                                <a href="/checkout/<%= product._id %>" class="btn mb-2 btn-primary btn-lg">Buy</a>
+                                <a href="<%= (product.stock > 0) ? `/checkout/${product._id}` : '#' %>" class="btn mb-2 btn-primary btn-lg">Buy</a>
                             </div> <!-- .card-body -->
                         </div> <!-- .card -->
                     <% } %>
