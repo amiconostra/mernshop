@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const orderSchema = mongoose.Schema({
-    products: {
+    order: {
         product: {
             type: Object,
             required: true
@@ -9,7 +9,23 @@ const orderSchema = mongoose.Schema({
         quantity: {
             type: Number,
             required: true
-        }
+        },
+        purchaseDate: {
+            type: Date,
+            required: true
+        },
+        totalPrice: {
+            type: Number,
+            required: true
+        },
+        payment: {
+            type: String,
+            required: true
+        },
+        status: {
+            type: String,
+            required: true
+        },
     },
     seller: {
         userId: {

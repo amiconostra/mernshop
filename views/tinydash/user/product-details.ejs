@@ -1,6 +1,6 @@
 <body class="vertical light">
     <div class="wrapper">
-      <%- include('../../includes/nav.ejs') %>
+      <%- include('../includes/nav.ejs') %>
       <main role="main" class="main-content ml-0">
         <div class="container-fluid">
           <div class="row justify-content-center">
@@ -41,6 +41,7 @@
                 <div class="row product-card">
                     <div class="card mb-4 shadow">
                         <div class="card-body text-center my-4">
+                            <%- include('../includes/alert-block') %>
                             <img class="product-detail-image" src="/<%= product.imageUrl %>" alt="<%= product.name %>">
                             <a href="#">
                                 <h3 class="h5 mt-4 mb-0">Product Name: <%= product.name %></h3>
@@ -51,7 +52,7 @@
                             <ul class="list-unstyled">
                                 <p>Product Description: <%= product.description %></p>
                             </ul>
-                            <a href="/checkout/<%= product._id %>" class="btn mb-2 btn-primary btn-lg">Buy</a>
+                            <a href="<%= (product.stock > 0) ? `/checkout/${product._id}` : '#' %>" class="btn mb-2 btn-primary btn-lg">Buy</a>
                         </div> <!-- .card-body -->
                     </div> <!-- .card -->
                 </div>

@@ -1,6 +1,6 @@
 <body class="light ">
     <div class="wrapper vh-100">
-      <%- include('../../includes/nav.ejs') %>
+      <%- include('../includes/nav.ejs') %>
       <div class="row align-items-center h-100">
         <form class="col-lg-6 col-md-8 col-10 mx-auto" action="/checkout" method="POST">
           <div class="mx-auto text-center my-4">
@@ -13,7 +13,7 @@
                 </g>
               </svg>
             </a>
-            <%- include('../../includes/alert-block.ejs') %>
+            <%- include('../includes/alert-block.ejs') %>
             <h2 class="my-3">Checkout</h2>
           </div>
           <div class="row">
@@ -44,6 +44,7 @@
                         <h3 class="h5 mt-4 mb-0"><%= product.name %></h3>
                     </a>
                     <p class="text-muted">Type: <%= product.type %></p>
+                    <p class="text-muted" id="stock">Stock: <%= product.stock %></p>
                     <span class="h1 mb-0">$<%= product.price %></span>
                     <p class="text-muted" id="quantityOut">Quantity: </p>
                 </div> <!-- .card-body -->
@@ -54,7 +55,7 @@
             </div>
           </div>
           <hr class="my-4">
-          <button class="btn btn-lg btn-primary btn-block" type="submit">Purchase</button>
+          <button class="btn btn-lg btn-primary btn-block" type="submit" <%= (product.stock > 0) ? '' : 'disabled' %>>Purchase</button>
           <p class="mt-3 mb-3 text-center"><strong><a href="/user/<%= seller.username %>"><%= seller.username %>'s shop</a></strong></p>
           <p class="mt-5 mb-3 text-muted text-center">© 2021</p>
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
