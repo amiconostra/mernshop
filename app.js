@@ -9,6 +9,7 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const flash = require('connect-flash');
 const csrf = require('csurf');
 const multer = require('multer');
+const cookieParser = require('cookie-parser');
 
 // Models
 const User = require('./models/user');
@@ -52,6 +53,7 @@ app.set('views', 'views');
 app.set('layout', path.join(config.theme.name, 'layout'));
 
 // Express Middlewares
+app.use(cookieParser());
 app.use(expressLayouts);
 app.use(express.static(path.join('public', config.theme.name)));
 app.use('/public/' + config.theme.name, express.static(path.join('public', config.theme.name)));

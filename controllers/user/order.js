@@ -26,7 +26,92 @@ exports.getOrders = async(req, res, next) => {
         error.status = 500;
         return next(error);
     }
-}
+};
+
+exports.getInvoices = async(req, res, next) => {
+    try {
+        const orders = await Order.find({'seller.userId': req.user._id});
+        res.render(path.join(config.theme.name, 'user', 'invoices'), {
+            pageTitle: 'Invoices',
+            path: '/dashboard/invoices',
+            orders: orders,
+            dateFormatter: dateFormatter,
+            success: req.flash('success')[0],
+            error: req.flash('error')[0]
+        });
+    } catch(err) {
+        const error = new Error(err);
+        error.status = 500;
+        return next(error);
+    }
+};
+
+exports.getInvoice = async(req, res, next) => {
+    const orderId = req.params.orderId;
+    try {
+        const order = await Order.findById(orderId);
+        if(!order) {
+            req.flash('error', 'Invoice Not Found');
+            return res.redirect('/dashboard/invoices');
+        }
+
+        if(order.seller.userId.toString() !== req.user._id.toString()) {
+            req.flash('error', 'unauthorized');
+            return res.redirect('/dashboard');
+        }
+
+        res.render(path.join(config.theme.name, 'user', 'invoice'), {
+            pageTitle: 'Invoice',
+            path: '/dashboard/invoices',
+            order: order,
+            dateFormatter: dateFormatter,
+            country: countryjs,
+            success: req.flash('success')[0],
+            error: req.flash('error')[0]
+        });
+    } catch(err) {
+        const error = new Error(err);
+        error.status = 500;
+        return next(error);
+    }
+};
+
+exports.getDownloadInvoice = async(req, res, next) => {
+    const orderId = req.params.orderId;
+    const downloadType = req.query.type;
+
+    if(downloadType !== 'pdf') {
+        req.flash('error', 'Currently we only support PDF Format!');
+        return res.redirect(`/dashboard/invoices/${orderId}`);
+    }
+
+    const invoiceName = 'invoice-' + orderId + '.pdf';
+    const invoicePath = path.join('data', 'invoices', invoiceName);
+    const invoiceUrl = `http://localhost:3000/dashboard/invoices/${orderId}`
+
+    try {
+        const order = await Order.findById(orderId);
+        if(!order) {
+            req.flash('error', 'Invoice Not Found');
+            return res.redirect('/dashboard/invoices');
+        }
+
+        if(order.seller.userId.toString() !== req.user._id.toString()) {
+            req.flash('error', 'unauthorized');
+            return res.redirect('/dashboard');
+        }
+        
+        //IMPLEMENT IT
+        
+        req.flash('error', 'feature is not supported!\nUse print -> Save as PDF');
+        return res.redirect(invoiceUrl);
+        
+    } catch(err) {
+        const error = new Error(err);
+        error.status = 500;
+        return next(error);
+    }
+};
 
 exports.getCheckout = async(req, res, next) => {
     const productId = req.params.productId;
@@ -58,7 +143,7 @@ exports.getCheckout = async(req, res, next) => {
         error.status = 500;
         return next(error);
     }
-}
+};
 
 exports.postCheckout = async(req, res, next) => {
     const buyerEmail = req.body.email;
@@ -115,6 +200,7 @@ exports.postCheckout = async(req, res, next) => {
 
         // Seller Details
         const sellerId = seller._id;
+        const sellerAccountType = seller.accountType;
         const sellerEmail = seller.email;
         const sellerFirstName = seller.firstName;
         const sellerLastName = seller.lastName;
@@ -124,7 +210,7 @@ exports.postCheckout = async(req, res, next) => {
         // Order Details
         const totalPrice = quantity * product.price;
 
-        const sellerInfo = {userId: sellerId, email: sellerEmail, firstName: sellerFirstName, lastName: sellerLastName, phoneNumber: sellerPhoneNumber, location: sellerLocation};
+        const sellerInfo = {userId: sellerId, accountType: sellerAccountType, email: sellerEmail, firstName: sellerFirstName, lastName: sellerLastName, phoneNumber: sellerPhoneNumber, location: sellerLocation};
         const buyerInfo = {email: buyerEmail, phoneNumber: buyerPhoneNumber, firstName: buyerFirstName, lastName: buyerLastName, location: { country: country, state: state, city: city, zip: zip, address: address }};
         const orderInfo = {
             order: {
@@ -152,4 +238,4 @@ exports.postCheckout = async(req, res, next) => {
         error.status = 500;
         return next(error);
     }
-}
+};

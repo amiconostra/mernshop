@@ -14,6 +14,8 @@ exports.getDashboard = (req, res, next) => {
 
     res.render(path.join(config.theme.name, 'dashboard'), {
         pageTitle: 'Dashboard',
-        path: '/dashboard'
+        path: '/dashboard',
+        success: req.flash('success')[0],
+        error: req.flash('error')[0]
     });
 };

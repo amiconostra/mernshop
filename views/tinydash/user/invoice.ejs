@@ -1,0 +1,99 @@
+<body class="vertical  light  ">
+    <div class="wrapper">
+      <%- include('../includes/side-nav.ejs') %>
+      <main role="main" class="main-content">
+        <div class="container-fluid">
+          <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+              <div class="row align-items-center mb-4">
+                <div class="col">
+                    <%- include('../includes/alert-block.ejs') %>
+                  <h2 class="h5 page-title"><small class="text-muted text-uppercase">Invoice</small><br />#<%= order._id %></h2>
+                </div>
+                <div class="col-auto">
+                  <button type="button" class="btn btn-secondary" onclick="window.print();">Print</button>
+                  <a href="/dashboard/invoices/<%= order._id %>/download?type=pdf" class="btn btn-primary">Download PDF</a>
+                </div>
+              </div>
+              <div class="card shadow">
+                <div class="card-body p-5">
+                  <div class="row mb-5">
+                    <div class="col-12 text-center mb-4">
+                      <img src="/assets/images/logo.svg" class="navbar-brand-img brand-sm mx-auto mb-4" alt="...">
+                      <h2 class="mb-0 text-uppercase">Invoice</h2>
+                      <p class="text-muted"> Mernshop<br /> <%= order.seller.location.address %>. </p>
+                    </div>
+                    <div class="col-md-7">
+                      <p class="small text-muted text-uppercase mb-2">Invoice from</p>
+                      <p class="mb-4">
+                        <strong><%= `${order.seller.firstName} ${order.seller.lastName}` %></strong><br /> <%= order.seller.accountType %><br /> <%= order.seller.location.address %>.<br /> <%= `${order.seller.location.city}, ${order.seller.location.state}` %><br /> <%= country.name(order.seller.location.country) %><br /> <%= order.seller.phoneNumber %><br />
+                      </p>
+                      <p>
+                        <span class="small text-muted text-uppercase">Invoice #</span><br />
+                        <strong><%= order._id %></strong>
+                      </p>
+                    </div>
+                    <div class="col-md-5">
+                      <p class="small text-muted text-uppercase mb-2">Invoice to</p>
+                      <p class="mb-4">
+                        <strong><%= `${order.buyer.firstName} ${order.buyer.lastName}` %></strong><br /> <%= (order.buyer.accountType) ? order.buyer.accountType : 'guest' %><br /> <%= order.buyer.location.address %>.<br /> <%= `${order.buyer.location.city}, ${order.buyer.location.state}` %><br /> <%= country.name(order.buyer.location.country) %><br /> <%= order.buyer.phoneNumber %><br />
+                      </p>
+                      <p>
+                        <small class="small text-muted text-uppercase">Purchase date</small><br />
+                        <strong><%= order.order.purchaseDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></strong>
+                      </p>
+                    </div>
+                  </div> <!-- /.row -->
+                  <table class="table table-borderless table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Description</th>
+                        <th scope="col" class="text-right">Price</th>
+                        <th scope="col" class="text-right">Quantity</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td> <%= order.order.product.name %><br />
+                          <span class="small text-muted"><%= order.order.product.description %></span>
+                        </td>
+                        <td class="text-right">$<%= order.order.product.price %></td>
+                        <td class="text-right"><%= order.order.quantity %></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="row mt-5">
+                    <div class="col-2 text-center">
+                      <img src="/assets/images/qrcode.svg" class="navbar-brand-img brand-sm mx-auto my-4" alt="...">
+                    </div>
+                    <div class="col-md-5">
+                      <p class="text-muted small">
+                        <strong>Note :</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam hendrerit nisi sed sollicitudin pellentesque. Nunc posuere purus rhoncus pulvinar aliquam. </p>
+                    </div>
+                    <div class="col-md-5">
+                      <div class="text-right mr-2">
+                        <p class="mb-2 h6">
+                          <span class="text-muted">Subtotal : </span>
+                          <strong>$<%= order.order.totalPrice %></strong>
+                        </p>
+                        <p class="mb-2 h6">
+                          <span class="text-muted">VAT (10%) : </span>
+                          <strong>$0</strong>
+                        </p>
+                        <p class="mb-2 h6">
+                          <span class="text-muted">Total : </span>
+                          <span>$<%= order.order.totalPrice %></span>
+                        </p>
+                      </div>
+                    </div>
+                  </div> <!-- /.row -->
+                </div> <!-- /.card-body -->
+              </div> <!-- /.card -->
+            </div> <!-- /.col-12 -->
+          </div> <!-- .row -->
+        </div> <!-- .container-fluid -->
+      </main> <!-- main -->
+    </div> <!-- .wrapper -->
+  </body>

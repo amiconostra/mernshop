@@ -1,0 +1,142 @@
+<body class="vertical  light  ">
+    <div class="wrapper">
+      <%- include('../includes/side-nav.ejs') %>
+      <main role="main" class="main-content">
+        <div class="container-fluid">
+          <div class="row justify-content-center">
+            <div class="col-12">
+              <h2 class="h3 mb-3 page-title">Invoices</h2>
+              <div class="row mb-4 items-align-center">
+                <div class="col-md">
+                    <%- include('../includes/alert-block.ejs') %>
+                </div>
+              </div>
+              <!-- Slide Modal -->
+              <div class="modal fade modal-slide" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="fe fe-x fe-12"></i>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="p-2">
+                        <div class="form-group my-4">
+                          <p class="mb-2">
+                            <strong>Payment</strong>
+                          </p>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customCheck1">
+                            <label class="custom-control-label" for="customCheck1">Paypal</label>
+                          </div>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customCheck2">
+                            <label class="custom-control-label" for="customCheck2">Credit Card</label>
+                          </div>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customCheck1-1" checked>
+                            <label class="custom-control-label" for="customCheck1">Wire Transfer</label>
+                          </div>
+                        </div> <!-- form-group -->
+                        <div class="form-group my-4">
+                          <p class="mb-2">
+                            <strong>Types</strong>
+                          </p>
+                          <div class="custom-control custom-radio">
+                            <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input">
+                            <label class="custom-control-label" for="customRadio1">End users</label>
+                          </div>
+                          <div class="custom-control custom-radio">
+                            <input type="radio" id="customRadio2" name="customRadio" class="custom-control-input" checked>
+                            <label class="custom-control-label" for="customRadio2">Whole Sales</label>
+                          </div>
+                        </div> <!-- form-group -->
+                        <div class="form-group my-4">
+                          <p class="mb-2">
+                            <strong>Completed</strong>
+                          </p>
+                          <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                            <label class="custom-control-label" for="customSwitch1">Include</label>
+                          </div>
+                        </div> <!-- form-group -->
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn mb-2 btn-primary btn-block">Apply</button>
+                      <button type="button" class="btn mb-2 btn-secondary btn-block">Reset</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <table class="table border table-hover bg-white">
+                <thead>
+                  <tr role="row">
+                    <th>
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="all">
+                        <label class="custom-control-label" for="all"></label>
+                      </div>
+                    </th>
+                    <th>Order ID</th>
+                    <th>Purchase Date</th>
+                    <th>Name</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                <% for(order of orders) { %>
+                  <% if(order.order.status === 'completed') { %>
+                    <tr>
+                        <td class="align-center">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input">
+                            <label class="custom-control-label"></label>
+                        </div>
+                        </td>
+                        <td><%= order._id %></td>
+                        <td><%= dateFormatter.formatYMDHMSwd(order.order.purchaseDate) %></td>
+                        <td><%= `${order.buyer.firstName} ${order.buyer.lastName}` %></td>
+                        <td><a href="/dashboard/products/<%= order.order.product._id %>"><%= order.order.product.name %></a></td>
+                        <td><%= order.order.quantity %></td>
+                        <td>$<%= order.order.totalPrice %></td>
+                        <td> <%= order.order.payment %></td>
+                        <td>
+                            <span class="dot dot-lg bg-success mr-2"></span>
+                        </td>
+                        <td>
+                        <div class="dropdown">
+                            <button class="btn btn-sm dropdown-toggle more-vertical" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="text-muted sr-only">Action</span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="/dashboard/invoices/<%= order._id %>">Invoice</a>
+                            <a class="dropdown-item" href="#">Remove</a>
+                            <a class="dropdown-item" href="#">Assign</a>
+                            </div>
+                        </div>
+                        </td>
+                    </tr>
+                    <% } %>
+                <% } %>
+                </tbody>
+              </table>
+              <nav aria-label="Table Paging" class="my-3">
+                <ul class="pagination justify-content-end mb-0">
+                  <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                  <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div> <!-- .row -->
+        </div> <!-- .container-fluid -->
+      </main> <!-- main -->
+    </div> <!-- .wrapper -->    
+</body> 

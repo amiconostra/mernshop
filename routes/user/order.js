@@ -11,6 +11,12 @@ const router = express.Router();
 
 router.get('/dashboard/orders', isAuth, orderController.getOrders);
 
+router.get('/dashboard/invoices', isAuth, orderController.getInvoices);
+
+router.get('/dashboard/invoices/:orderId', isAuth, orderController.getInvoice);
+
+router.get('/dashboard/invoices/:orderId/download', isAuth, orderController.getDownloadInvoice);
+
 router.get('/checkout/:productId', orderController.getCheckout);
 
 router.post('/checkout', inputValidator.validate('checkout'), orderController.postCheckout);
