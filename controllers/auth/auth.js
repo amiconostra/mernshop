@@ -322,7 +322,7 @@ exports.postVerifyEmail = (req, res, next) => {
                 return res.redirect('/verify');
             }
             
-            if(user.verified) {
+            if(user.verifiedEmail) {
                 req.flash('error', 'User already Verified');
                 return res.redirect('/');
             }
@@ -389,7 +389,7 @@ exports.postVerifyAccount = async(req, res, next) => {
             return res.redirect('/');
         }
 
-        user.verified = true;
+        user.verifiedEmail = true;
         user.verifyToken = undefined;
         user.verifyTokenExpiration = undefined;
         req.flash('success', 'Email has been Verified');
@@ -419,12 +419,12 @@ exports.getVerifyToken = async(req, res, next) => {
             return res.redirect('/');
         }
 
-        if(user.verified) {
+        if(user.verifiedEmail) {
             req.flash('error', 'User already Verified');
             return res.redirect('/');
         }
 
-        user.verified = true;
+        user.verifiedEmail = true;
         user.verifyToken = undefined;
         user.verifyTokenExpiration = undefined;
         await user.save();

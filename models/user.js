@@ -5,6 +5,11 @@ const Order = require('./order');
 const Sale = require('./sale');
 
 const userSchema = new mongoose.Schema({
+    accountType: {
+        type: String,
+        required: true,
+        default: 'user'
+    },
     email: {
         type: String,
         required: true
@@ -30,11 +35,12 @@ const userSchema = new mongoose.Schema({
     location: {
         country: String,
         state: String,
+        city: String,
         zip: Number,
         address: String
     },
     company: String,
-    verified: {
+    verifiedEmail: {
         type: Boolean,
         required: true,
         default: false

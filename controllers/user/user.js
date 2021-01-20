@@ -2,7 +2,7 @@ const path = require('path');
 const rootdir = require('../../helpers/rootdir');
 const config = require(path.join(rootdir, 'config.json'));
 const { validationResult } = require('express-validator');
-const states = require('us-state-converter');
+const country = require('countryjs');
 
 // Models
 const User = require(path.join(rootdir, 'models', 'user'));
@@ -25,7 +25,7 @@ exports.getUser = async(req, res, next) => {
             pageTitle: user.username,
             user: user,
             products: products,
-            states: states
+            country: country
         });
     } catch(err) {
         const error = new Error(err);
@@ -55,9 +55,9 @@ exports.getProduct = async(req, res, next) => {
             pageTitle: user.username,
             user: user,
             product: product,
-            states: states,
             success: req.flash('success')[0],
-            error: req.flash('error')[0]
+            error: req.flash('error')[0],
+            country: country
         });
     } catch(err) {
         const error = new Error(err);

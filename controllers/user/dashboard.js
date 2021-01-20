@@ -6,7 +6,7 @@ const config = require(path.join(rootdir, 'config.json'));
 const User = require(rootdir, 'models', 'user');
 
 exports.getDashboard = (req, res, next) => {
-    if(!req.user.verified) {
+    if(!req.user.verifiedEmail) {
         req.session.isAuthenticated = false;
         req.flash('error', 'Please Verify your account');
         res.redirect('/login');

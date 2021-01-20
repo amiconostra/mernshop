@@ -49,8 +49,9 @@ exports.validate = (method) => {
                 body('newConfirmPassword', 'Passwords do not Match!').optional({checkFalsy: true}).isLength({min: 1}).trim().custom((value, {req}) => value === req.body.newPassword),
                 body('phoneNumber', 'Phone Number must be valid, and between 0-15 Characters').optional({checkFalsy: true}).isLength({max: 15}).isMobilePhone().trim(),
                 body('bio', 'Bio must be less 500 Characters').optional({checkFalsy: true}).isLength({max: 500}).trim(),
-                body('country', 'Country must be valid, and in ISO_3166-1_alpha-3 format').optional({checkFalsy: true}).isLength({min: 3, max: 3}).isISO31661Alpha3().trim(),
-                body('state', 'States must be valid, and in Two-letter acronym').optional({checkFalsy: true}).isLength({min: 2, max: 2}).trim(),
+                body('country', 'Country must be valid, and in ISO_3166-1_alpha-2 format').optional({checkFalsy: true}).isLength({min: 2, max: 2}).isISO31661Alpha2().trim(),
+                body('state', 'States must be valid, and in ISO_3166_2 Format').optional({checkFalsy: true}).isLength({min: 2, max: 2}).trim(),
+                body('city', 'City must be valid, and less than 255 Characters').optional({checkFalsy: true}).isLength({max: 255}).trim(),
                 body('zip', 'Zipcode must be a valid, and 5 Characters').optional({checkFalsy: true}).isLength({min: 5, max:5}).isPostalCode('any').trim(),
                 body('address', 'Address must be valid, and less than 255 Characters').optional({checkFalsy: true}).isLength({max: 255}).trim(),
                 body('company', 'Company name must be valid, and less than 32 Characters').optional({checkFalsy: true}).isLength({max: 32}).trim()

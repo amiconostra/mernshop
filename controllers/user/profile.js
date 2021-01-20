@@ -1,9 +1,9 @@
 const path = require('path');
 const rootdir = require('../../helpers/rootdir');
 const config = require(path.join(rootdir, 'config.json'));
-const states = require('us-state-converter');
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
+const country = require('countryjs');
 
 // Models
 const User = require(path.join(rootdir, 'models', 'user'));
@@ -13,7 +13,7 @@ exports.getProfile = (req, res, next) => {
         pageTitle: 'Profile Overview',
         path: '/dashboard/profile',
         user: req.user,
-        states: states
+        country: country
     });
 };
 
@@ -22,11 +22,11 @@ exports.getProfileSettings = (req, res, next) => {
         pageTitle: 'Profile Settings',
         path: '/dashboard/profile-settings',
         user: req.user,
-        states: states,
         success: req.flash('success')[0],
         error: req.flash('error')[0],
         validationBox: false,
-        validationError: []
+        validationError: [],
+        country: country
     });
 };
 
@@ -38,8 +38,9 @@ exports.postProfileSettings = async(req, res, next) => {
     const updatedPhoneNumber = req.body.phoneNumber;
     const updatedCountry = req.body.country;
     const updatedState = req.body.state;
-    const updatedAddress = req.body.address;
+    const updatedCity = req.body.city;
     const updatedZip = req.body.zip;
+    const updatedAddress = req.body.address;
     const updatedBio = req.body.bio;
     const updatedCompany = req.body.company;
     const currentPassword = req.body.password;
@@ -56,6 +57,7 @@ exports.postProfileSettings = async(req, res, next) => {
             location: {
                 country: updatedCountry,
                 state: updatedState,
+                city: updatedCity,
                 address: updatedAddress,
                 zip: updatedZip
             },
@@ -69,11 +71,11 @@ exports.postProfileSettings = async(req, res, next) => {
             pageTitle: 'Profile Settings',
             path: '/dashboard/profile-settings',
             user: input,
-            states: states,
             success: '',
             error: errors.array()[0].msg,
             validationBox: true,
-            validationError: errors.array()
+            validationError: errors.array(),
+            country: country
         });
     }
 
@@ -106,6 +108,7 @@ exports.postProfileSettings = async(req, res, next) => {
         user.phoneNumber = updatedPhoneNumber;
         user.location.country = updatedCountry;
         user.location.state = updatedState;
+        user.location.city = updatedCity;
         user.location.address = updatedAddress;
         user.location.zip = updatedZip;
         user.bio = updatedBio;
