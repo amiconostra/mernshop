@@ -26,7 +26,7 @@ router.use(indexRoute);
 router.use('/dashboard', dashboardRoutes);
 router.use('/dashboard', productRoutes);
 router.use('/dashboard', profileRoutes);
-router.use('/dashboard', orderRoutes);
+router.use(orderRoutes);
 router.use(userRoutes);
 
 // Auth Routes

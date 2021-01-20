@@ -60,9 +60,15 @@ exports.validate = (method) => {
         case 'checkout': {
             return [
                 body('email', 'Invalid Email Address').exists().isLength({max: 64}).isEmail().normalizeEmail().trim(),
+                body('phoneNumber', 'Phone Number must be valid, and between 0-15 Characters').optional({checkFalsy: true}).isLength({max: 15}).isMobilePhone().trim(),
                 body('firstName', 'First Name must be between 2-26 Characters, and can only contain Letters').exists().matches('^[a-zA-Z_ ]*$').isLength({min: 2, max: 26}).trim(),
                 body('lastName', 'Last Name must be between 2-26 Characters, and can only contain Letters').exists().matches('^[a-zA-Z_ ]*$').isLength({min: 2, max: 26}).trim(),
-                body('quantity', 'Quantity can only be Number').exists().isInt().custom((value, {req}) => value > 0)
+                body('quantity', 'Quantity can only be Number').exists().isInt().custom((value, {req}) => value > 0),
+                body('country', 'Country must be valid, and in ISO_3166-1_alpha-2 format').exists().isLength({min: 2, max: 2}).isISO31661Alpha2().trim(),
+                body('state', 'States must be valid, and in ISO_3166_2 Format').exists().isLength({min: 2, max: 2}).trim(),
+                body('city', 'City must be valid, and less than 255 Characters').exists().isLength({max: 255}).trim(),
+                body('zip', 'Zipcode must be a valid, and 5 Characters').exists().isLength({min: 5, max:5}).isPostalCode('any').trim(),
+                body('address', 'Address must be valid, and less than 255 Characters').exists().isLength({max: 255}).trim()
             ];
         }
     }

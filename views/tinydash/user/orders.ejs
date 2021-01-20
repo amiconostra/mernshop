@@ -144,8 +144,8 @@
                     <th>Name</th>
                     <th>Product</th>
                     <th>Quantity</th>
-                    <!-- <th>Phone</th> -->
-                    <!-- <th>Ship To</th> -->
+                    <th>Phone</th>
+                    <th>Ship To</th>
                     <th>Total</th>
                     <th>Payment</th>
                     <th>Status</th>
@@ -166,8 +166,8 @@
                     <td><%= `${order.buyer.firstName} ${order.buyer.lastName}` %></td>
                     <td><a href="/dashboard/products/<%= order.order.product._id %>"><%= order.order.product.name %></a></td>
                     <td><%= order.order.quantity %></td>
-                    <!-- <td>(697) 486-2101</td> -->
-                    <!-- <td>996-3523 Et Ave</td> -->
+                    <td><%= order.buyer.phoneNumber %></td>
+                    <td><%= order.buyer.location.address %></td>
                     <td>$<%= order.order.totalPrice %></td>
                     <td> <%= order.order.payment %></td>
                     <td>

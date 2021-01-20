@@ -19,22 +19,58 @@
           <div class="row">
             <div class="col-6">
               <div class="form-group">
-                <label for="inputEmail">Email</label>
+                <label for="inputEmail">Email*</label>
                 <input name="email" value="<%= input.email %>" type="email" class="form-control <%= (validationBox && validationError.find(err => err.param !== 'email')) ? 'is-valid' : '' %> <%= validationError.find(err => err.param === 'email') ? 'is-invalid' : '' %>" id="inputEmail" placeholder="Email Address" required>
+              </div>
+              <div class="form-group">
+                <label for="inputPhoneNumber">Phone Number</label>
+                <input name="phoneNumber" value="<%= input.number %>" type="number" class="form-control <%= (validationBox && validationError.find(err => err.param !== 'number')) ? 'is-valid' : '' %> <%= validationError.find(err => err.param === 'number') ? 'is-invalid' : '' %>" id="inputPhoneNumber" placeholder="Phone Number">
               </div>
               <div class="form-row">
                 <div class="form-group col-md-6">
-                  <label for="firstname">Firstname</label>
+                  <label for="firstname">Firstname*</label>
                   <input name="firstName" value="<%= input.firstName %>" type="text" id="firstname" class="form-control <%= (validationBox && validationError.find(err => err.param !== 'firstName')) ? 'is-valid' : '' %> <%= validationError.find(err => err.param === 'firstName') ? 'is-invalid' : '' %>" placeholder="First Name" required>
                 </div>
                 <div class="form-group col-md-6">
-                  <label for="lastname">Lastname</label>
+                  <label for="lastname">Lastname*</label>
                   <input name="lastName" value="<%= input.lastName %>" type="text" id="lastname" class="form-control <%= (validationBox && validationError.find(err => err.param !== 'lastName')) ? 'is-valid' : '' %> <%= validationError.find(err => err.param === 'lastName') ? 'is-invalid' : '' %>" placeholder="Last name" required>
                 </div>
               </div>
               <div class="form-group">
-                <label for="quantity">Quantity</label>
+                <label for="quantity">Quantity*</label>
                 <input name="quantity" value="<%= input.quantity %>" type="number" id="quantity" class="form-control <%= (validationBox && validationError.find(err => err.param !== 'quantity')) ? 'is-valid' : '' %> <%= validationError.find(err => err.param === 'quantity') ? 'is-invalid' : '' %>" placeholder="Quantity" required>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-8">
+                  <label for="inputAddress5">Address*</label>
+                  <input type="text" name="address" value="<%= input.location.address %>"  class="form-control" id="inputAddress5" placeholder="<%= input.location.address %>">
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="inputCity5">City*</label>
+                  <input type="text" name="city" value="<%= input.location.city %>"  class="form-control" id="inputCity5" placeholder="<%= input.location.city %>">
+                </div>
+                <div class="form-group col-md-4">
+                <label for="inputCountry">Country*</label>
+                <select name="country" id="inputCountry" class="form-control">
+                    <option selected="<%= input.location.country %>" value="<%= input.location.country %>"><%= country.name(input.location.country) %></option>
+                    <% for(country of country.all()) { %>
+                      <% if(country.name != null || country.name != undefined) { %>
+                        <option value="<%= country.ISO.alpha2 %>"><%= country.name %></option>
+                      <% } %>
+                    <% } %>
+                </select>
+                </div>
+
+                <div class="form-group col-md-4">
+                  <label for="inputState">State*</label>
+                  <select name="state" id="inputState" class="form-control">
+                    <option selected="" value="<%= input.location.state %>"><%= input.location.state %></option>
+                  </select>
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="inputZip5">Zip*</label>
+                  <input type="number" name="zip" value="<%= input.location.zip %>" class="form-control" id="inputZip5" placeholder="<%= input.location.zip %>">
+                </div>
               </div>
             </div>
             <div class="col-6">
@@ -52,7 +88,7 @@
             </div>
             <div>
               
-            </div>
+          </div>
           </div>
           <hr class="my-4">
           <button class="btn btn-lg btn-primary btn-block" type="submit" <%= (product.stock > 0) ? '' : 'disabled' %>>Purchase</button>
@@ -69,4 +105,5 @@
         $("#quantityOut").text('Quantity: ' + $("#quantity").val());
       });
     </script>
+    <script src="/js/location.js"></script>
 </body>

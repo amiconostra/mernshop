@@ -64,6 +64,12 @@ const orderSchema = mongoose.Schema({
         lastName: {
             type: String,
             required: true
+        },
+        phoneNumber: {
+            type: Number
+        },
+        location: {
+            type: Object
         }
     }
 });
