@@ -6,14 +6,30 @@ const { validationResult } = require('express-validator');
 // Models
 const Product = require(path.join(rootdir, 'models/product'));
 
-exports.getProducts = async(req, res, next) => {
-    try {
-        const products = await Product.find({userId: req.user._id});
+const ROWS_PER_PAGE = 10;
 
-        res.render(path.join(config.theme.name, 'products'), {
+exports.getProducts = async(req, res, next) => {
+    const page = +req.query.page || 1;
+
+    try {
+        const products = await Product.find({userId: req.user._id}).skip((page - 1) * ROWS_PER_PAGE).limit(ROWS_PER_PAGE);
+        const totalItems = await Product.find({userId: req.user._id}).countDocuments();
+        
+        res.render(path.join(config.theme.name, 'user', 'products'), {
             pageTitle: 'Products',
             path: '/dashboard/products',
-            products: products
+            products: products,
+            pagination: {
+                totalItems: totalItems,
+                minRow: (ROWS_PER_PAGE * page) - ROWS_PER_PAGE,
+                maxRow: (ROWS_PER_PAGE * page),
+                currentPage: page,
+                hasNextPage: ROWS_PER_PAGE * page < totalItems,
+                hasPreviousPage: page > 1,
+                nextPage: page + 1,
+                previousPage: page - 1,
+                lastPage: Math.ceil(totalItems / ROWS_PER_PAGE)
+            },
         });
     } catch(err) {
         const error = new Error(err);

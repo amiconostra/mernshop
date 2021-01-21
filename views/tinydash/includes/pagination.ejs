@@ -1,0 +1,25 @@
+<div class="row">
+    <div class="col-sm-12 col-md-5">
+       <div class="dataTables_info" id="dataTable-1_info" role="status" aria-live="polite">Showing <%= pagination.minRow %> to <%= (pagination.maxRow > pagination.totalItems) ?  pagination.totalItems : pagination.maxRow  %> of <%= pagination.totalItems %> entries</div>
+    </div>
+    <div class="col-sm-12 col-md-7">
+       <div class="dataTables_paginate paging_simple_numbers" id="dataTable-1_paginate">
+          <ul class="pagination justify-content-end mb-0">
+              
+            <li class="paginate_button page-item previous <%= !pagination.hasPreviousPage ? 'disabled' : '' %>"><a href="?page=<%= pagination.previousPage %>" class="page-link">Previous</a></li>
+
+            <% if(pagination.currentPage !== 1 && pagination.previousPage !== 1) { %>
+                <li class="paginate_button page-item"><a href="?page=1" class="page-link">1</a></li>
+            <% } %>
+
+            <li class="paginate_button page-item active"><a href="?page=<%= pagination.currentPage %>" class="page-link"><%= pagination.currentPage %></a></li>
+
+            <% if(pagination.lastPage !== pagination.currentPage && pagination.nextPage !== pagination.lastPage) { %>
+                <li class="paginate_button page-item"><a href="?page=<%= pagination.lastPage %>" class="page-link"><%= pagination.lastPage %></a></li>
+            <% } %>
+
+            <li class="paginate_button page-item next <%= !pagination.hasNextPage ? 'disabled' : '' %>"><a href="?page=<%= pagination.nextPage %>" class="page-link">Next</a></li>
+          </ul>
+       </div>
+    </div>
+</div>

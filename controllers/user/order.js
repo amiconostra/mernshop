@@ -10,14 +10,31 @@ const Order = require(path.join(rootdir, 'models', 'order'));
 const User = require(path.join(rootdir, 'models', 'user'));
 const Product = require(path.join(rootdir, 'models', 'product'));
 
+const ROWS_PER_PAGE = 10;
+
 exports.getOrders = async(req, res, next) => {
+    const page = +req.query.page || 1;
+
     try {
-        const orders = await Order.find({'seller.userId': req.user._id});
+        const orders = await Order.find({'seller.userId': req.user._id}).skip((page - 1) * ROWS_PER_PAGE).limit(ROWS_PER_PAGE);
+        const totalItems = await Order.find({'seller.userId': req.user._id}).countDocuments();
+
         res.render(path.join(config.theme.name, 'user', 'orders'), {
             pageTitle: 'Orders',
             path: '/dashboard/orders',
             orders: orders,
             dateFormatter: dateFormatter,
+            pagination: {
+                totalItems: totalItems,
+                minRow: (ROWS_PER_PAGE * page) - ROWS_PER_PAGE,
+                maxRow: (ROWS_PER_PAGE * page),
+                currentPage: page,
+                hasNextPage: ROWS_PER_PAGE * page < totalItems,
+                hasPreviousPage: page > 1,
+                nextPage: page + 1,
+                previousPage: page - 1,
+                lastPage: Math.ceil(totalItems / ROWS_PER_PAGE)
+            },
             success: req.flash('success')[0],
             error: req.flash('error')[0]
         });
@@ -29,13 +46,28 @@ exports.getOrders = async(req, res, next) => {
 };
 
 exports.getInvoices = async(req, res, next) => {
+    const page = +req.query.page || 1;
+
     try {
-        const orders = await Order.find({'seller.userId': req.user._id});
+        const orders = await Order.find({'seller.userId': req.user._id, 'order.status': 'completed'}).skip((page - 1) * ROWS_PER_PAGE).limit(ROWS_PER_PAGE);;
+        const totalItems = await Order.find({'seller.userId': req.user._id, 'order.status': 'completed'}).countDocuments();
+
         res.render(path.join(config.theme.name, 'user', 'invoices'), {
             pageTitle: 'Invoices',
             path: '/dashboard/invoices',
             orders: orders,
             dateFormatter: dateFormatter,
+            pagination: {
+                totalItems: totalItems,
+                minRow: (ROWS_PER_PAGE * page) - ROWS_PER_PAGE,
+                maxRow: (ROWS_PER_PAGE * page),
+                currentPage: page,
+                hasNextPage: ROWS_PER_PAGE * page < totalItems,
+                hasPreviousPage: page > 1,
+                nextPage: page + 1,
+                previousPage: page - 1,
+                lastPage: Math.ceil(totalItems / ROWS_PER_PAGE)
+            },
             success: req.flash('success')[0],
             error: req.flash('error')[0]
         });
