@@ -8,23 +8,23 @@
     <link rel="icon" href="/favicon.ico">
     <title><%= pageTitle %></title>
     <!-- Simple bar CSS -->
-    <link rel="stylesheet" href="/css/simplebar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplebar/5.3.0/simplebar.min.css" integrity="sha512-uZTwaYYhJLFXaXYm1jdNiH6JZ1wLCTVnarJza7iZ1OKQmvi6prtk85NMvicoSobylP5K4FCdGEc4vk1AYT8b9Q==" crossorigin="anonymous" />
     <!-- Fonts CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <!-- Icons CSS -->
     <link rel="stylesheet" href="/css/feather.css">
-    <link rel="stylesheet" href="/css/select2.css">
-    <link rel="stylesheet" href="/css/dropzone.css">
-    <link rel="stylesheet" href="/css/uppy.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.2/dropzone.min.css" integrity="sha512-3g+prZHHfmnvE1HBLwUnVuunaPOob7dpksI7/v6UnF/rnKGwHf/GdEq9K7iEN7qTtW+S0iivTcGpeTBqqB04wA==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uppy/1.24.0/uppy.min.css" integrity="sha512-AlgodRCmxN1sI0uUiPYxh6NeOiw5/V4hvGLuZQjZrWF0I+ek5CXi9JiyJy74YjIaXGQjKvRIRc9uXOWqCkUF5w==" crossorigin="anonymous" />
     <link rel="stylesheet" href="/css/jquery.steps.css">
-    <link rel="stylesheet" href="/css/jquery.timepicker.css">
-    <link rel="stylesheet" href="/css/quill.snow.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.13.16/jquery.timepicker.min.css" integrity="sha512-GgUcFJ5lgRdt/8m5A0d0qEnsoi8cDoF0d6q+RirBPtL423Qsj5cI9OxQ5hWvPi5jjvTLM/YhaaFuIeWCLi6lyQ==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" integrity="sha512-/FHUK/LsH78K9XTqsR9hbzr21J8B8RwHR/r8Jv9fzry6NVAOVIGFKQCNINsbhK7a1xubVu2r5QZcz2T9cKpubw==" crossorigin="anonymous" />
     <!-- Data Tables -->
-    <link rel="stylesheet" href="/css/dataTables.bootstrap4.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap4.min.css" integrity="sha512-PT0RvABaDhDQugEbpNMwgYBCnGCiTZMh9yOzUsJHDgl/dMhD9yjHAwoumnUk3JydV3QTcIkNDuN40CJxik5+WQ==" crossorigin="anonymous" />
     <!-- Date Range Picker CSS -->
-    <link rel="stylesheet" href="/css/daterangepicker.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.1/daterangepicker.min.css" integrity="sha512-CliXBuHwQxr4nHkBGnjI8GeVo/P3u+GN0OlXB22b7/0YZkMCKdt2a2G8CEHFk+fwGhRWyyAFib64f90kZoWBvQ==" crossorigin="anonymous" />
     <!-- FullCalendar CSS -->
-    <link rel="stylesheet" href="/css/fullcalendar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" integrity="sha512-KXkS7cFeWpYwcoXxyfOumLyRGXMp7BTMTjwrgjMg0+hls4thG2JGzRgQtRfnAuKTn2KWTDZX4UdPg+xTs8k80Q==" crossorigin="anonymous" />
     <!-- App CSS -->
     <link rel="stylesheet" href="/css/app-light.css" id="lightTheme">
     <link rel="stylesheet" href="/css/app-dark.css" id="darkTheme" disabled>
@@ -32,39 +32,41 @@
   </head>
   <%- body %>
 
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/popper.min.js"></script>
-    <script src="/js/moment.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-    <script src="/js/simplebar.min.js"></script>
-    <script src="/js/daterangepicker.js"></script>
-    <script src="/js/jquery.stickOnScroll.js"></script>
-    <script src="/js/tinycolor-min.js"></script>
-    <script src="/js/config.js"></script>
-    <script src="/js/d3.min.js"></script>
-    <script src="/js/topojson.min.js"></script>
-    <script src="/js/datamaps.all.min.js"></script>
-    <script src="/js/datamaps-zoomto.js"></script>
-    <script src="/js/datamaps.custom.js"></script>
-    <script src="/js/Chart.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.6.0/umd/popper.min.js" integrity="sha512-BmM0/BQlqh02wuK5Gz9yrbe7VyIVwOzD1o40yi1IsTjriX/NGF37NyXHfmFzIlMmoSIBXgqDiG1VNU6kB5dBbA==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha512-I5TkutApDjnWuX+smLIPZNhw+LhTd8WrQhdCKsxCFRSvhFx2km8ZfEpNIhF9nq04msHhOkE8BMOBj5QE07yhMA==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/simplebar/5.3.0/simplebar.min.js" integrity="sha512-AS9rZZDdb+y4W2lcmkNGwf4swm6607XJYpNST1mkNBUfBBka8btA6mgRmhoFQ9Umy8Nj/fg5444+SglLHbowuA==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.1/daterangepicker.min.js" integrity="sha512-FEzFjtAJCunp3uJTwYfcHtJHlRbgkzRYNpvsShtjVu5jSoejpExyzHHSDOUJ46IgV7VoNAkuVxjbid5pkoLASg==" crossorigin="anonymous"></script>
+  <script src="/js/jquery.stickOnScroll.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.2/tinycolor.min.js" integrity="sha512-+aXA9mgbUvFe0ToTlbt8/3vT7+nOgUmFw29wfFCsGoh8AZMRSU0p4WtOvC1vkF2JBrndPN2TuNZsHPAKPPxe8Q==" crossorigin="anonymous"></script>
+  <script src="/js/config.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js" integrity="sha512-oJp0DdQuQQrRsKVly+Ww6fAN1GwJN7d1bi8UubpEbzDUh84WrJ2CFPBnT4LqBCcfqTcHR5OGXFFhaPe3g1/bzQ==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js" integrity="sha512-4UKI/XKm3xrvJ6pZS5oTRvIQGIzZFoXR71rRBb1y2N+PbwAsKa5tPl2J6WvbEvwN3TxQCm8hMzsl/pO+82iRlg==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/datamaps/0.5.9/datamaps.all.min.js" integrity="sha512-IZSt84iYbJU2FZoyF8qGVVvdxbN2IjkimV2yAkFA3/Nei09Zr3HwwBYv+57h+qwpJDDpHbcEfHfhWaXh1Eg+SQ==" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/datamaps-zoomto@0.1.3/build/datamaps-zoomto.min.js" integrity="sha256-AYBpd4JPOQmf7lA+8QSlbq41stxYN0xjGHWS3Ymt5+U=" crossorigin="anonymous"></script>
+  <script src="/js/datamaps.custom.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" integrity="sha512-d9xgZrVZpmmQlfonhQUvTR7lMPtO7NkZMkA0ABN3PHCbKA5nqylQ/yWlFAyY6hYgdF1Qh6nYiuADWwKB4C2WSw==" crossorigin="anonymous"></script>
 
-    <script>
-      /* defind global options */
-      Chart.defaults.global.defaultFontFamily = base.defaultFontFamily;
-      Chart.defaults.global.defaultFontColor = colors.mutedColor;
-    </script>
+  <script>
+    /* defind global options */
+    Chart.defaults.global.defaultFontFamily = base.defaultFontFamily;
+    Chart.defaults.global.defaultFontColor = colors.mutedColor;
+  </script>
 
-    <script src="/js/gauge.min.js"></script>
-    <script src="/js/jquery.sparkline.min.js"></script>
-    <script src="/js/apexcharts.min.js"></script>
-    <script src="/js/apexcharts.custom.js"></script>
-    <script src='js/jquery.mask.min.js'></script>
-    <script src='/js/select2.min.js'></script>
-    <script src='/js/jquery.steps.min.js'></script>
-    <script src='/js/jquery.validate.min.js'></script>
-    <script src='/js/jquery.timepicker.js'></script>
-    <script src='/js/dropzone.min.js'></script>
-    <script src='/js/uppy.min.js'></script>
-    <script src='/js/quill.min.js'></script>
-    <script src='/js/apps.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gauge.js/1.3.7/gauge.min.js" integrity="sha512-J0d1VfdfTSDoDPEsahCtf2nC+groXdWkuQFyJjS+s3CpKj63X9Hf3pMEJtjIJt/ODh0QwTRx2/OioL+9fMoqSA==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js" integrity="sha512-3PRVLmoBYuBDbCEojg5qdmd9UhkPiyoczSFYjnLhFb2KAFsWWEMlAPt0olX1Nv7zGhDfhGEVkXsu51a55nlYmw==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.23.1/apexcharts.min.js" integrity="sha512-WwS+Umbt0Rg018tm6mpitwwR84x+RlrWFCd6byM4xf5Jgv2hKHA9dCwQ5IcyJr6z3gt+6O3mEvo58AYp9KjZ4g==" crossorigin="anonymous"></script>
+  <script src="/js/apexcharts.custom.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-steps/1.1.0/jquery.steps.min.js" integrity="sha512-bE0ncA3DKWmKaF3w5hQjCq7ErHFiPdH2IGjXRyXXZSOokbimtUuufhgeDPeQPs51AI4XsqDZUK7qvrPZ5xboZg==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js" integrity="sha512-UdIMMlVx0HEynClOIFSyOrPggomfhBKJE28LKl8yR3ghkgugPnG6iLfRfHwushZl1MOPSY6TsuBDGPK2X4zYKg==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.13.16/jquery.timepicker.min.js" integrity="sha512-huX0hcUeIkgR0QvTlhxNpIAcwiN2sABe3VwyzeZAYjMPn3OU71t9ZLlk6qs27Q049SPgeB/Az12jv/ayedXoAw==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.2/min/dropzone.min.js" integrity="sha512-9WciDs0XP20sojTJ9E7mChDXy6pcO0qHpwbEJID1YVavz2H6QBz5eLoDD8lseZOb2yGT8xDNIV7HIe1ZbuiDWg==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/uppy/1.24.0/uppy.min.js" integrity="sha512-zq6u0SjqBwEZJP4C6JwFW9ecWKNLFY1kv+fHk4E26eHTlDh2oQlXjusT5iCGKq4jPC7zVFmA5B7s+K+QNcnxBg==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js" integrity="sha512-P2W2rr8ikUPfa31PLBo5bcBQrsa+TNj8jiKadtaIrHQGMo6hQM6RdPjQYxlNguwHz8AwSQ28VkBK6kHBLgd/8g==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js" integrity="sha512-BkpSL20WETFylMrcirBahHfSnY++H2O1W+UnEEO4yNIl+jI2+zowyoGJpbtk6bx97fBXf++WJHSSK2MV4ghPcg==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap4.min.js" integrity="sha512-OQlawZneA7zzfI6B1n1tjUuo3C5mtYuAWpQdg+iI9mkDoo7iFzTqnQHf+K5ThOWNJ9AbXL4+ZDwH7ykySPQc+A==" crossorigin="anonymous"></script>
+  <script src="/js/apps.js"></script>
 </html>
