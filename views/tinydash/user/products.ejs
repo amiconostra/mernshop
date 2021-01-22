@@ -50,12 +50,10 @@
                                 <span class="text-muted sr-only">Action</span>
                               </button>
                               <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="/dashboard/products/edit/<%= product._id %>?edit=true">Edit</a>
-                                <form action="/dashboard/products/delete" method="POST">
+                                  <a class="dropdown-item" href="/dashboard/products/edit/<%= product._id %>?edit=true">Edit</a>
                                   <input type="hidden" name="productId" value="<%= product._id %>">
                                   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                  <button type="submit" class="dropdown-item">Remove</button>
-                                </form>
+                                  <button type="button" class="dropdown-item" onclick="deleteProduct(this)">Remove</button>
                               </div>
                             </td>
                           </tr>
@@ -73,4 +71,5 @@
         <%- include('../includes/sidebar.ejs') %>
       </main> <!-- main -->
     </div> <!-- .wrapper -->
+    <script src="/js/user/product.js"></script>
 </body>
