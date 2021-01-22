@@ -2,6 +2,7 @@ const path = require('path');
 const rootdir = require('../../helpers/rootdir');
 const config = require(path.join(rootdir, 'config.json'));
 const { validationResult } = require('express-validator');
+const fileHelper = require(path.join(rootdir, 'helpers', 'file'));
 
 // Models
 const Product = require(path.join(rootdir, 'models/product'));
@@ -165,6 +166,7 @@ exports.postEditProduct = async(req, res, next) => {
         product.price = updatedPrice;
         product.stock = updatedStock;
         if(image) {
+            fileHelper.deleteFile(product.imageUrl);
             product.imageUrl = image.path;
         }
 
@@ -179,8 +181,14 @@ exports.postEditProduct = async(req, res, next) => {
 
 exports.deleteProduct = async(req, res, next) => {
     const productId = req.body.productId;
-    
+
     try {
+        const product = await Product.findById(productId);
+        if(!product) {
+            return next(new Error('Product not found!'));
+        }
+
+        fileHelper.deleteFile(product.imageUrl);
         await Product.deleteOne({_id: productId, userId: req.user._id});
         res.redirect('/dashboard/products');
     } catch(err) {
