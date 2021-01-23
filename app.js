@@ -31,8 +31,8 @@ const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         if(file.fieldname == 'avatar') {
             cb(null, 'public/tinydash/assets/avatars');
-        } else {
-            cb(null, 'public/tinydash/assets/products');   
+        } else if(file.fieldname == 'productImage') {
+            cb(null, 'public/tinydash/assets/products');
         }
     },
     filename: (req, file, cb) => {
@@ -65,7 +65,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(multer({storage: fileStorage, fileFilter: fileFilter}).fields(
     [
-        { name: 'image', maxCount: 1 },
+        { name: 'productImage', maxCount: 1 },
         { name: 'avatar', maxCount: 1 }
     ]
 ));

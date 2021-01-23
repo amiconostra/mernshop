@@ -24,6 +24,7 @@ exports.getOrders = async(req, res, next) => {
             path: '/dashboard/orders',
             orders: orders,
             dateFormatter: dateFormatter,
+            user: req.user,
             pagination: {
                 totalItems: totalItems,
                 minRow: (ROWS_PER_PAGE * page) - ROWS_PER_PAGE,
@@ -57,6 +58,7 @@ exports.getInvoices = async(req, res, next) => {
             path: '/dashboard/invoices',
             orders: orders,
             dateFormatter: dateFormatter,
+            user: req.user,
             pagination: {
                 totalItems: totalItems,
                 minRow: (ROWS_PER_PAGE * page) - ROWS_PER_PAGE,
@@ -96,6 +98,7 @@ exports.getInvoice = async(req, res, next) => {
             pageTitle: 'Invoice',
             path: '/dashboard/invoices',
             order: order,
+            user: req.user,
             dateFormatter: dateFormatter,
             country: countryjs,
             success: req.flash('success')[0],

@@ -20,6 +20,7 @@ exports.getProducts = async(req, res, next) => {
             pageTitle: 'Products',
             path: '/dashboard/products',
             products: products,
+            user: req.user,
             pagination: {
                 totalItems: totalItems,
                 minRow: (ROWS_PER_PAGE * page) - ROWS_PER_PAGE,
@@ -30,7 +31,7 @@ exports.getProducts = async(req, res, next) => {
                 nextPage: page + 1,
                 previousPage: page - 1,
                 lastPage: Math.ceil(totalItems / ROWS_PER_PAGE)
-            },
+            }
         });
     } catch(err) {
         const error = new Error(err);
@@ -44,6 +45,7 @@ exports.getAddProduct = (req, res, next) => {
         pageTitle: 'Add Product',
         path: '/dashboard/products/add',
         editing: false,
+        user: req.user,
         success: req.flash('success')[0],
         error: req.flash('error')[0],
         validationBox: false,
@@ -57,16 +59,21 @@ exports.postAddProduct = async(req, res, next) => {
     const type = req.body.type;
     const price = req.body.price;
     const stock = req.body.stock;
-    const image = req.file;
     const errors = validationResult(req);
 
-    if(!image) {
+    let productImage;
+    if(req.files.productImage) {
+        productImage = req.files.productImage[0];
+    }
+
+    if(!productImage) {
         return res.status(422).render(path.join(config.theme.name, 'edit-product'), {
             pageTitle: 'Add Product',
             path: '/dashboard/products/add',
             editing: false,
             success: '',
             error: 'Please attach an Image file',
+            user: req.user,
             product: {name: name, description: description, type: type, price: price, stock: stock},
             validationBox: false,
             validationError: []
@@ -74,10 +81,14 @@ exports.postAddProduct = async(req, res, next) => {
     }
 
     if(!errors.isEmpty()) {
+        if(productImage) {
+            fileHelper.deleteFile(productImage.path);
+        }
         return res.status(422).render(path.join(config.theme.name, 'edit-product'), {
             pageTitle: 'Add Product',
             path: '/dashboard/products/add',
             editing: false,
+            user: req.user,
             success: '',
             error: errors.array()[0].msg,
             product: {name: name, description: description, type: type, price: price, stock: stock},
@@ -86,8 +97,7 @@ exports.postAddProduct = async(req, res, next) => {
         });
     }
 
-    const imageUrl = image.path;
-    
+    const imageUrl = productImage.path;
     const product = new Product({name: name, description: description, type: type, price: price, stock: stock, imageUrl: imageUrl, userId: req.user});
 
     try {
@@ -119,6 +129,7 @@ exports.getEditProduct = async(req, res, next) => {
             path: '/dashboard/products/edit',
             editing: editMode,
             product: product,
+            user: req.user,
             success: req.flash('success')[0],
             error: req.flash('error')[0],
             validationBox: false,
@@ -138,14 +149,22 @@ exports.postEditProduct = async(req, res, next) => {
     const updatedType = req.body.type;
     const updatedPrice = req.body.price;
     const updatedStock = req.body.stock;
-    const image = req.file;
     const errors = validationResult(req);
+    
+    let productImage;
+    if(req.files.productImage) {
+        productImage = req.files.productImage[0];
+    }
 
     if(!errors.isEmpty()) {
+        if(productImage) {
+            fileHelper.deleteFile(productImage.path);
+        }
         return res.status(422).render(path.join(config.theme.name, 'edit-product'), {
             pageTitle: 'Edit Product',
             path: '/dashboard/products/edit',
             editing: true,
+            user: req.user,
             success: '',
             error: errors.array()[0].msg,
             product: {_id: productId, name: updatedName, description: updatedDescription, type: updatedType, price: updatedPrice, stock: updatedStock},
@@ -165,9 +184,9 @@ exports.postEditProduct = async(req, res, next) => {
         product.type = updatedType;
         product.price = updatedPrice;
         product.stock = updatedStock;
-        if(image) {
+        if(productImage) {
             fileHelper.deleteFile(product.imageUrl);
-            product.imageUrl = image.path;
+            product.imageUrl = productImage.path;
         }
 
         await product.save();
