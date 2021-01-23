@@ -18,11 +18,14 @@
                   <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Notifications</a>
                 </li>
               </ul>
-              <form action="/dashboard/profile-settings" method="POST">
+              <form action="/dashboard/profile-settings" method="POST" enctype="multipart/form-data">
                 <div class="row mt-5 align-items-center">
                   <div class="col-md-3 text-center mb-5">
                     <div class="avatar avatar-xl">
-                      <img src="/assets/avatars/face-1.jpg" alt="..." class="avatar-img rounded-circle">
+                      <label for="upload">
+                        <img id="avatar" src="/<%= user.avatarUrl %>" alt="..." class="avatar-img rounded-circle">
+                        <input type="file" name="avatar" id="upload" style="display:none" onchange="reloadImage(this);">
+                      </label>
                     </div>
                   </div>
                   <div class="col">
@@ -151,4 +154,16 @@
   </div> <!-- .wrapper -->
 
   <script src="/js/location.js"></script>
+  <script>
+    function reloadImage(input) {
+      if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#avatar')
+                    .attr('src', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+      };
+    };
+  </script>
 </body>

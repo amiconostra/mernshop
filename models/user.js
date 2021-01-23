@@ -1,8 +1,13 @@
 const mongoose = require('mongoose');
+const path = require('path');
+const rootdir = require('../helpers/rootdir');
+const config = require(path.join(rootdir, 'config.json'));
 
 // Models
 const Order = require('./order');
 const Sale = require('./sale');
+
+const defaultAvatarUrl = path.join('public', config.theme.name, 'assets', 'avatars', 'default-avatar.png');
 
 const userSchema = new mongoose.Schema({
     accountType: {
@@ -38,6 +43,11 @@ const userSchema = new mongoose.Schema({
         city: String,
         zip: Number,
         address: String
+    },
+    avatarUrl: {
+        type: String,
+        required: true,
+        default: defaultAvatarUrl
     },
     company: String,
     verifiedEmail: {

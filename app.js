@@ -29,10 +29,14 @@ const csrfProtection = csrf();
 // Multer Settings
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'public/tinydash/assets/products');
+        if(file.fieldname == 'avatar') {
+            cb(null, 'public/tinydash/assets/avatars');
+        } else {
+            cb(null, 'public/tinydash/assets/products');   
+        }
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' +file.originalname);
+        cb(null, Date.now() + '-' + file.originalname);
     }
 });
 
@@ -59,7 +63,12 @@ app.use(express.static(path.join('public', config.theme.name)));
 app.use('/public/' + config.theme.name, express.static(path.join('public', config.theme.name)));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image'));
+app.use(multer({storage: fileStorage, fileFilter: fileFilter}).fields(
+    [
+        { name: 'image', maxCount: 1 },
+        { name: 'avatar', maxCount: 1 }
+    ]
+));
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,

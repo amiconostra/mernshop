@@ -4,6 +4,7 @@ const config = require(path.join(rootdir, 'config.json'));
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const country = require('countryjs');
+const fileHelper = require(path.join(rootdir, 'helpers', 'file'));
 
 // Models
 const User = require(path.join(rootdir, 'models', 'user'));
@@ -31,6 +32,10 @@ exports.getProfileSettings = (req, res, next) => {
 };
 
 exports.postProfileSettings = async(req, res, next) => {
+    let avatar;
+    if(req.files.avatar) {
+        avatar = req.files.avatar[0];
+    }
     const updatedFirstName = req.body.firstName;
     const updatedLastName = req.body.lastName;
     const updatedEmail = req.body.email;
@@ -48,7 +53,12 @@ exports.postProfileSettings = async(req, res, next) => {
     const errors = validationResult(req);
 
     if(!errors.isEmpty()) {
+        if(avatar) {
+            fileHelper.deleteFile(avatar.path);
+        }
+
         const input = {
+            avatarUrl: req.user.avatarUrl,
             firstName: updatedFirstName, 
             lastName: updatedLastName, 
             email: updatedEmail,
@@ -101,6 +111,14 @@ exports.postProfileSettings = async(req, res, next) => {
             return res.redirect('/dashboard/profile-settings');
         }
 
+        if(avatar) {
+            if(user.avatarUrl.split('\\').pop() === 'default-avatar.png') {
+                user.avatarUrl = avatar.path;
+            } else {
+                fileHelper.deleteFile(user.avatarUrl);
+                user.avatarUrl = avatar.path;
+            }
+        }
         user.firstName = updatedFirstName;
         user.lastName = updatedLastName;
         user.email = updatedEmail;
