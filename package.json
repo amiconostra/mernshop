@@ -1,7 +1,7 @@
 {
-  "name": "mernshop",
+  "name": "openshop",
   "version": "1.0.0",
-  "description": "MERN ECommerce Web Application",
+  "description": "OpenShop ECommerce Web Application",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
