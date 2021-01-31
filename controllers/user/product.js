@@ -41,7 +41,7 @@ exports.getProducts = async(req, res, next) => {
 };
 
 exports.getAddProduct = (req, res, next) => {
-    res.render(path.join(config.theme.name, 'edit-product'), {
+    res.render(path.join(config.theme.name, 'user', 'edit-product'), {
         pageTitle: 'Add Product',
         path: '/dashboard/products/add',
         editing: false,
@@ -124,7 +124,7 @@ exports.getEditProduct = async(req, res, next) => {
             return res.redirect('/dashboard/products');
         }
 
-        res.render(path.join(config.theme.name, 'edit-product'), {
+        res.render(path.join(config.theme.name, 'user', 'edit-product'), {
             pageTitle: 'Edit Product',
             path: '/dashboard/products/edit',
             editing: editMode,

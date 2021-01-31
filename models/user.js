@@ -55,6 +55,13 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: false
     },
+    settings: {
+        activityLog: {
+            type: Boolean,
+            default: true
+        }
+    },
+    activityLog: [Object],
     verifyToken: String,
     verifyTokenExpiration: Date,
     resetToken: String,

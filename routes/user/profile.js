@@ -15,4 +15,8 @@ router.get('/profile-settings', isAuth, profileController.getProfileSettings);
 
 router.post('/profile-settings', isAuth, inputValidator.validate('profile'), profileController.postProfileSettings);
 
+router.get('/profile-security', isAuth, profileController.getProfileSecurity);
+
+router.put('/profile-security/:userId', isAuth, profileController.putProfileSecurity);
+
 module.exports = router;

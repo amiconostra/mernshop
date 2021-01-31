@@ -10,6 +10,7 @@ const flash = require('connect-flash');
 const csrf = require('csurf');
 const multer = require('multer');
 const cookieParser = require('cookie-parser');
+const useragent = require('express-useragent');
 
 // Models
 const User = require('./models/user');
@@ -52,6 +53,7 @@ const fileFilter = (req, file, cb) => {
 const app = express();
 
 // Express Settings
+app.set('trust proxy', true);
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 app.set('layout', path.join(config.theme.name, 'layout'));
@@ -78,6 +80,7 @@ app.use(session({
 }));
 app.use(csrfProtection);
 app.use(flash());
+app.use(useragent.express());
 
 // Shared Across Views (Requests)
 app.use((req, res, next) => {

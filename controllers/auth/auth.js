@@ -5,6 +5,7 @@ const config = require(path.join(rootdir, 'config.json'));
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const nodemailer = require('nodemailer');
+const geoip = require('geoip-lite');
 
 const mailTransporter = nodemailer.createTransport(config.mail.smtp);
 
@@ -51,6 +52,21 @@ exports.postLogin = async(req, res, next) => {
         if(matches) {
             req.session.user = user;
             req.session.isAuthenticated = true;
+
+            // Activity Log
+            if(user.settings.activityLog) {
+                const ip = req.header('x-forwarded-for') || req.connection.remoteAddress || req.ip;
+                const device = `${req.useragent.browser} - ${req.useragent.os}`
+                let geo = geoip.lookup(ip);
+                if(geo) {
+                    geo = `${geo.city}, ${geo.region}, ${geo.country}`;
+                }
+                const time = new Date();
+
+                const activityLog = {ip: ip, device: device, location: geo, time: time};
+                user.activityLog.push(activityLog);
+                await user.save();
+            }
             return req.session.save(err => {
                 res.redirect('/');
             });

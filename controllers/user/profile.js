@@ -156,3 +156,37 @@ exports.postProfileSettings = async(req, res, next) => {
         return next(error);
     }
 };
+
+exports.getProfileSecurity = async(req, res, next) => {
+    res.render(path.join(config.theme.name, 'user', 'profile', 'profile-security'), {
+        pageTitle: 'User Security',
+        path: '/dashboard/profile-security',
+        user: req.user,
+        success: req.flash('success')[0],
+        error: req.flash('error')[0],
+        validationBox: false,
+        validationError: []
+    });
+};
+
+exports.putProfileSecurity = async(req, res, next) => {
+    const userId = req.params.userId;
+    const activityLog = req.body.activityLog;
+
+    try {
+        const user = await User.findById(userId);
+        if(!user) {
+            return res.status(422).json({message: 'Invalid Session'});
+        }
+
+        if(req.user._id.toString() !== user._id.toString()) {
+            return res.status(403).json({message: 'Not Authorized'});
+        }
+
+        user.settings.activityLog = activityLog;
+        await user.save();
+        res.status(200).json({message: 'User Security has been updated'});
+    } catch(err) {
+        res.status(500).json({message: err.message});
+    }
+};

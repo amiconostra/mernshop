@@ -1,0 +1,99 @@
+<body class="vertical  light  ">
+    <div class="wrapper">
+      <%- include('../../includes/side-nav.ejs') %>
+      <main role="main" class="main-content">
+        <div class="container-fluid">
+          <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+              <h2 class="h3 mb-4 page-title">Settings</h2>
+              <div class="my-4">
+                <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Profile</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Security</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Notifications</a>
+                  </li>
+                </ul>
+                <h5 class="mb-0 mt-5">Security Settings</h5>
+                <p>These settings are helps you keep your account secure.</p>
+                <div class="list-group mb-5 shadow">
+                  <div class="list-group-item">
+                    <div class="row align-items-center">
+                      <div class="col">
+                        <strong class="mb-2">Enable Activity Logs</strong>
+                        <p class="text-muted mb-0">Logs User Activies</p>
+                      </div> <!-- .col -->
+                      <div class="col-auto">
+                        <div class="custom-control custom-switch">
+                          <input type="checkbox" class="custom-control-input" id="activityLog" <%= user.settings.activityLog ? 'checked' : 'unchecked' %>>
+                          <label class="custom-control-label" for="activityLog"></label>
+                        </div>
+                      </div> <!-- .col -->
+                    </div> <!-- .row -->
+                  </div> <!-- .list-group-item -->
+                  <div class="list-group-item">
+                    <div class="row align-items-center">
+                      <div class="col">
+                        <strong class="mb-2">2FA Authentication</strong>
+                        <span class="badge badge-pill badge-danger">Disabled</span>
+                        <p class="text-muted mb-0">Secure your account by enabling 2FA</p>
+                      </div> <!-- .col -->
+                      <div class="col-auto">
+                        <button class="btn btn-primary btn-sm" disabled>Enable</button>
+                      </div> <!-- .col -->
+                    </div> <!-- .row -->
+                  </div> <!-- .list-group-item -->
+                  <div class="list-group-item">
+                    <div class="row align-items-center">
+                      <div class="col">
+                        <strong class="mb-2">Activate Pin Code</strong>
+                        <p class="text-muted mb-0">You will be asked for this PIN Code when you login</p>
+                      </div> <!-- .col -->
+                      <div class="col-auto">
+                        <div class="custom-control custom-switch">
+                          <input type="checkbox" class="custom-control-input" id="pinCode">
+                          <span class="custom-control-label"></span>
+                        </div>
+                      </div> <!-- .col -->
+                    </div> <!-- .row -->
+                  </div> <!-- .list-group-item -->
+                </div> <!-- .list-group -->
+                <h5 class="mb-0">Recent Activity</h5>
+                <p>Last activities with your account.</p>
+                <table class="table border bg-white">
+                  <thead>
+                    <tr>
+                      <th>Device</th>
+                      <th>Location</th>
+                      <th>IP</th>
+                      <th>Time</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% for(log of user.activityLog) { %>
+                    <tr>
+                      <th scope="col"><i class="fe fe-globe fe-12 text-muted mr-2"></i><%= log.device %></th>
+                      <td><%= (log.location) ? `${log.location.city}, ${log.location.region}, ${log.location.country}` : 'N/A' %></td>
+                      <td><%= log.ip %></td>
+                      <td><%= log.time %></td>
+                      <td><a hreff="#" class="text-muted"><i class="fe fe-x"></i></a></td>
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div> <!-- /.card-body -->
+            </div> <!-- /.col-12 -->
+          </div> <!-- .row -->
+        </div> <!-- .container-fluid -->
+        <%- include('../../includes/sidebar.ejs') %>
+      </main> <!-- main -->
+    </div> <!-- .wrapper -->
+    <input type="hidden" name="userId" value="<%= user._id %>">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <script src="/js/user/profile/profile-security.js"></script>
+</body>

@@ -1,5 +1,5 @@
 <body class="vertical light">
-    <%- include('./includes/side-nav.ejs') %>
+    <%- include('../includes/side-nav.ejs') %>
     <main role="main" class="main-content">
       <div class="container-fluid">
         <div class="row justify-content-center">
@@ -8,7 +8,7 @@
             <p class="text-muted"><%= (editing) ? 'Edit the product below' : 'Add a new Product' %></p>
             <div class="card-deck">
               <div class="card shadow mb-4">
-                <%- include('./includes/alert-block.ejs') %>
+                <%- include('../includes/alert-block.ejs') %>
                 <div class="card-header">
                   <strong class="card-title">Product Details</strong>
                 </div>
@@ -54,7 +54,7 @@
           </div> <!-- .col-12 -->
         </div> <!-- .row -->
       </div> <!-- .container-fluid -->
-      <%- include('./includes/sidebar.ejs') %>
+      <%- include('../includes/sidebar.ejs') %>
     </main> <!-- main -->
   </div> <!-- .wrapper -->
 </body>
