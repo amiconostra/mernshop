@@ -26,7 +26,7 @@
                     <div class="col-md-7">
                       <p class="small text-muted text-uppercase mb-2">Invoice from</p>
                       <p class="mb-4">
-                        <strong><%= `${order.seller.firstName} ${order.seller.lastName}` %></strong><br /> <%= order.seller.accountType %><br /> <%= order.seller.location.address %>.<br /> <%= `${order.seller.location.city}, ${order.seller.location.state}` %><br /> <%= country.name(order.seller.location.country) %><br /> <%= order.seller.phoneNumber %><br />
+                        <strong><%= `${order.seller.firstName} ${order.seller.lastName}` %></strong><br /> <%= order.seller.type %><br /> <%= order.seller.location.address %>.<br /> <%= `${order.seller.location.city}, ${order.seller.location.state}` %><br /> <%= country.name(order.seller.location.country) %><br /> <%= order.seller.phoneNumber %><br />
                       </p>
                       <p>
                         <span class="small text-muted text-uppercase">Invoice #</span><br />
@@ -36,7 +36,7 @@
                     <div class="col-md-5">
                       <p class="small text-muted text-uppercase mb-2">Invoice to</p>
                       <p class="mb-4">
-                        <strong><%= `${order.buyer.firstName} ${order.buyer.lastName}` %></strong><br /> <%= (order.buyer.accountType) ? order.buyer.accountType : 'guest' %><br /> <%= order.buyer.location.address %>.<br /> <%= `${order.buyer.location.city}, ${order.buyer.location.state}` %><br /> <%= country.name(order.buyer.location.country) %><br /> <%= order.buyer.phoneNumber %><br />
+                        <strong><%= `${order.buyer.firstName} ${order.buyer.lastName}` %></strong><br /> <%= (order.buyer.type) ? order.buyer.type : 'guest' %><br /> <%= order.buyer.location.address %>.<br /> <%= `${order.buyer.location.city}, ${order.buyer.location.state}` %><br /> <%= country.name(order.buyer.location.country) %><br /> <%= order.buyer.phoneNumber %><br />
                       </p>
                       <p>
                         <small class="small text-muted text-uppercase">Purchase date</small><br />

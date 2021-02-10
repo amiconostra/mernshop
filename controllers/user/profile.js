@@ -1,6 +1,5 @@
 const path = require('path');
 const rootdir = require('../../helpers/rootdir');
-const config = require(path.join(rootdir, 'config.json'));
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const country = require('countryjs');
@@ -10,7 +9,7 @@ const fileHelper = require(path.join(rootdir, 'helpers', 'file'));
 const User = require(path.join(rootdir, 'models', 'user'));
 
 exports.getProfile = (req, res, next) => {
-    res.render(path.join(config.theme.name, 'user', 'profile', 'profile'), {
+    res.render('user/profile/profile', {
         pageTitle: 'Profile Overview',
         path: '/dashboard/profile',
         user: req.user,
@@ -19,7 +18,7 @@ exports.getProfile = (req, res, next) => {
 };
 
 exports.getProfileSettings = (req, res, next) => {
-    res.render(path.join(config.theme.name, 'user', 'profile', 'profile-settings'), {
+    res.render('user/profile/profile-settings', {
         pageTitle: 'Profile Settings',
         path: '/dashboard/profile-settings',
         user: req.user,
@@ -33,9 +32,10 @@ exports.getProfileSettings = (req, res, next) => {
 
 exports.postProfileSettings = async(req, res, next) => {
     let avatar;
-    if(req.files.avatar) {
-        avatar = req.files.avatar[0];
+    if(req.file) {
+        avatar = req.file.path.replace(/\\/g, '/');
     }
+
     const updatedFirstName = req.body.firstName;
     const updatedLastName = req.body.lastName;
     const updatedEmail = req.body.email;
@@ -54,7 +54,7 @@ exports.postProfileSettings = async(req, res, next) => {
 
     if(!errors.isEmpty()) {
         if(avatar) {
-            fileHelper.deleteFile(avatar.path);
+            fileHelper.deleteFile(avatar);
         }
 
         const input = {
@@ -77,7 +77,7 @@ exports.postProfileSettings = async(req, res, next) => {
             newPassword: newPassword
         };
 
-        return res.status(422).render(path.join(config.theme.name, 'user', 'profile', 'profile-settings'), {
+        return res.status(422).render('user/profile/profile-settings', {
             pageTitle: 'Profile Settings',
             path: '/dashboard/profile-settings',
             user: input,
@@ -113,10 +113,10 @@ exports.postProfileSettings = async(req, res, next) => {
 
         if(avatar) {
             if(user.avatarUrl.split('\\').pop() === 'default-avatar.png') {
-                user.avatarUrl = avatar.path;
+                user.avatarUrl = avatar;
             } else {
                 fileHelper.deleteFile(user.avatarUrl);
-                user.avatarUrl = avatar.path;
+                user.avatarUrl = avatar;
             }
         }
         user.firstName = updatedFirstName;
@@ -158,7 +158,7 @@ exports.postProfileSettings = async(req, res, next) => {
 };
 
 exports.getProfileSecurity = async(req, res, next) => {
-    res.render(path.join(config.theme.name, 'user', 'profile', 'profile-security'), {
+    res.render('user/profile/profile-security', {
         pageTitle: 'User Security',
         path: '/dashboard/profile-security',
         user: req.user,

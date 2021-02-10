@@ -18,7 +18,7 @@
                   <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Notifications</a>
                 </li>
               </ul>
-              <form action="/dashboard/profile-settings" method="POST" enctype="multipart/form-data">
+              <form action="/dashboard/profile-settings/?_csrf=<%=csrfToken%>" method="POST" enctype="multipart/form-data">
                 <div class="row mt-5 align-items-center">
                   <div class="col-md-3 text-center mb-5">
                     <div class="avatar avatar-xl">
@@ -143,7 +143,6 @@
                   </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Save Change</button>
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
               </form>
             </div> <!-- /.card-body -->
           </div> <!-- /.col-12 -->

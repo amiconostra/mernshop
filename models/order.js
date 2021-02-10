@@ -33,7 +33,7 @@ const orderSchema = mongoose.Schema({
             ref: 'User',
             required: true
         },
-        accountType: {
+        type: {
             type: String,
             required: true
         },

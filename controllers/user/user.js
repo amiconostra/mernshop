@@ -1,6 +1,5 @@
 const path = require('path');
 const rootdir = require('../../helpers/rootdir');
-const config = require(path.join(rootdir, 'config.json'));
 const { validationResult } = require('express-validator');
 const country = require('countryjs');
 
@@ -20,7 +19,7 @@ exports.getUser = async(req, res, next) => {
 
         const products = await Product.find({userId: user._id});
 
-        res.render(path.join(config.theme.name, 'user', 'user'), {
+        res.render('user/user', {
             pageTitle: user.username,
             user: user,
             products: products,
@@ -50,7 +49,7 @@ exports.getProduct = async(req, res, next) => {
             res.redirect(`/user/${username}`);
         }
 
-        res.render(path.join(config.theme.name, 'user', 'product-details'), {
+        res.render('user/product-details', {
             pageTitle: user.username,
             user: user,
             product: product,

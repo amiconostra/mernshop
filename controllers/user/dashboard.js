@@ -1,9 +1,8 @@
 const path = require('path');
 const rootdir = require('../../helpers/rootdir');
-const config = require(path.join(rootdir, 'config.json'));
 
 // Models
-const User = require(rootdir, 'models', 'user');
+const User = require(path.join(rootdir, 'models', 'user'));
 
 exports.getDashboard = (req, res, next) => {
     if(!req.user.verifiedEmail) {
@@ -12,7 +11,7 @@ exports.getDashboard = (req, res, next) => {
         res.redirect('/login');
     }
 
-    res.render(path.join(config.theme.name, 'dashboard'), {
+    res.render('dashboard', {
         pageTitle: 'Dashboard',
         path: '/dashboard',
         user: req.user,

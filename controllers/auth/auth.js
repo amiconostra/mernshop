@@ -1,19 +1,19 @@
 const crypto = require('crypto');
 const path = require('path');
 const rootdir = require('../../helpers/rootdir');
-const config = require(path.join(rootdir, 'config.json'));
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const nodemailer = require('nodemailer');
+const mailConfig = require(path.join(rootdir, 'config', 'mail'));
 const geoip = require('geoip-lite');
 
-const mailTransporter = nodemailer.createTransport(config.mail.smtp);
+const mailTransporter = nodemailer.createTransport(mailConfig.smtp);
 
 // Models
-const User = require(path.join(rootdir, 'models/user'));
+const User = require(path.join(rootdir, 'models', 'user'));
 
 exports.getLogin = (req, res, next) => {
-    res.render(path.join(config.theme.name, 'auth/login'), {
+    res.render('auth/login', {
         pageTitle: 'Login',
         path: '/login',
         success: req.flash('success')[0],
@@ -30,7 +30,7 @@ exports.postLogin = async(req, res, next) => {
     const errors = validationResult(req);
 
     if(!errors.isEmpty()) {
-        return res.status(422).render(path.join(config.theme.name, 'auth/login'), {
+        return res.status(422).render('auth/login', {
             pageTitle: 'Login',
             path: '/login',
             error: errors.array()[0].msg,
@@ -82,7 +82,7 @@ exports.postLogin = async(req, res, next) => {
 };
 
 exports.getRegister = (req, res, next) => {   
-    res.render(path.join(config.theme.name, 'auth/register'), {
+    res.render('auth/register', {
         pageTitle: 'Register',
         path: '/register',
         success: req.flash('success')[0],
@@ -94,6 +94,7 @@ exports.getRegister = (req, res, next) => {
 };
 
 exports.postRegister = (req, res, next) => {
+    const serverUrl = req.protocol + '://' + req.get('host');
     const email = req.body.email;
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
@@ -102,7 +103,7 @@ exports.postRegister = (req, res, next) => {
     const errors = validationResult(req);
 
     if(!errors.isEmpty()) {
-        return res.status(422).render(path.join(config.theme.name, 'auth/register'), {
+        return res.status(422).render('auth/register', {
             pageTitle: 'Register',
             path: '/register',
             error: errors.array()[0].msg,
@@ -138,14 +139,14 @@ exports.postRegister = (req, res, next) => {
 
             mailTransporter.sendMail({
                 to: email,
-                from: config.mail.general.from,
+                from: mailConfig.general.noreply_mail,
                 subject: 'Registration Successful!',
                 html: `
                     <h1>You Successfully Signed Up!</h1>
                     <p>Email Verification</p>
                     <p>Token: ${token}</p>
-                    <p>Click <a href="${config.server.url}/verify/${token}?userId=${result._id}">${config.server.url}/verify/${token}?userId=${result._id}</a> To Verify Your Email</p>
-                    <p>Or Do it manually at <a href="${config.server.url}/verify/email">${config.server.url}/verify/email</a></p>
+                    <p>Click <a href="${serverUrl}/verify/${token}?userId=${result._id}">${serverUrl}/verify/${token}?userId=${result._id}</a> To Verify Your Email</p>
+                    <p>Or Do it manually at <a href="${serverUrl}/verify/email">${serverUrl}/verify/email</a></p>
                 `
             });
         } catch(err) {
@@ -164,7 +165,7 @@ exports.postLogout = (req, res, next) => {
 };
 
 exports.getReset = (req, res, next) => {
-    res.render(path.join(config.theme.name, 'auth/verify-reset'), {
+    res.render('auth/verify-reset', {
         pageTitle: 'Reset Password',
         path: '/reset',
         verifyEmail: false,
@@ -177,11 +178,12 @@ exports.getReset = (req, res, next) => {
 };
 
 exports.postReset = (req, res, next) => {
+    const serverUrl = req.protocol + '://' + req.get('host');
     const email = req.body.email;
     const errors = validationResult(req);
 
     if(!errors.isEmpty()) {
-        return res.status(422).render(path.join(config.theme.name, 'auth/verify-reset'), {
+        return res.status(422).render('auth/verify-reset', {
             pageTitle: 'Reset Password',
             path: '/reset',
             verifyEmail: false,
@@ -217,11 +219,11 @@ exports.postReset = (req, res, next) => {
             res.redirect('/confirmation?type=reset&email=' + email);
             return mailTransporter.sendMail({
                 to: email,
-                from: config.mail.general.from,
+                from: mailConfig.general.noreply_mail,
                 subject: 'Password Reset',
                 html: `
                     <p>Requested Password Reset</p>
-                    <p>Click <a href="${config.server.url}/reset/${token}">LINK</a> To Reset password</p>
+                    <p>Click <a href="${serverUrl}/reset/${token}">LINK</a> To Reset password</p>
                 `
             });
         } catch(err) {
@@ -241,7 +243,7 @@ exports.getResetPassword = async(req, res, next) => {
             return res.redirect('/');
         }
 
-        res.render(path.join(config.theme.name, 'auth/reset-password'), {
+        res.render('auth/reset-password', {
             pageTitle: 'Reset Password',
             path: '/reset',
             success: req.flash('success')[0],
@@ -292,7 +294,7 @@ exports.postResetPassword = async(req, res, next) => {
 };
 
 exports.getVerifyEmail = (req, res, next) => {
-    res.render(path.join(config.theme.name, 'auth/verify-reset'), {
+    res.render('auth/verify-reset', {
         pageTitle: 'Verify Email',
         path: '/verify',
         verifyEmail: true,
@@ -305,11 +307,12 @@ exports.getVerifyEmail = (req, res, next) => {
 };
 
 exports.postVerifyEmail = (req, res, next) => {
+    const serverUrl = req.protocol + '://' + req.get('host');
     const email = req.body.email;
     const errors = validationResult(req);
 
     if(!errors.isEmpty()) {
-        return res.status(422).render(path.join(config.theme.name, 'auth/verify-reset'), {
+        return res.status(422).render('auth/verify-reset', {
             pageTitle: 'Verify Email',
             path: '/verify',
             verifyEmail: true,
@@ -351,13 +354,13 @@ exports.postVerifyEmail = (req, res, next) => {
             
             mailTransporter.sendMail({
                 to: email,
-                from: config.mail.general.from,
+                from: mailConfig.general.noreply_mail,
                 subject: 'Email Verification',
                 html: `
                     <p>Requested Email Verification</p>
                     <p>Token: ${token}</p>
-                    <p>Click <a href="${config.server.url}/verify/${token}?userId=${user._id}">${config.server.url}/verify/${token}?userId=${user._id}</a> To Verify Your Email</p>
-                    <p>Or Do it manually at <a href="${config.server.url}/verify/email">${config.server.url}/verify/email</a></p>
+                    <p>Click <a href="${serverUrl}/verify/${token}?userId=${user._id}">${serverUrl}/verify/${token}?userId=${user._id}</a> To Verify Your Email</p>
+                    <p>Or Do it manually at <a href="${serverUrl}/verify/email">${serverUrl}/verify/email</a></p>
                 `
             });
         } catch(err) {
@@ -369,7 +372,7 @@ exports.postVerifyEmail = (req, res, next) => {
 };
 
 exports.getVerifyAccount = (req, res, next) => {
-    res.render(path.join(config.theme.name, 'auth/verify-email'), {
+    res.render('auth/verify-email', {
         pageTitle: 'Verify Email',
         path: '/verify/email',
         success: req.flash('success')[0],
@@ -386,7 +389,7 @@ exports.postVerifyAccount = async(req, res, next) => {
     const errors = validationResult(req);
 
     if(!errors.isEmpty()) {
-        return res.status(422).render(path.join(config.theme.name, 'auth/verify-email'), {
+        return res.status(422).render('auth/verify-email', {
             pageTitle: 'Verify Email',
             path: '/verify/email',
             verifyEmail: true,
@@ -462,7 +465,7 @@ exports.getConfirmation = (req, res, next) => {
         return res.redirect('/');
     }
 
-    res.render(path.join(config.theme.name, 'auth/confirmation'), {
+    res.render('auth/confirmation', {
         pageTitle: 'Confirm',
         confirmType: confirmType,
         email: email

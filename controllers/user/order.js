@@ -1,6 +1,5 @@
 const path = require('path');
 const rootdir = require('../../helpers/rootdir');
-const config = require(path.join(rootdir, 'config.json'));
 const dateFormatter = require(path.join(rootdir, 'helpers', 'date-formatter'));
 const { validationResult } = require('express-validator');
 const countryjs = require('countryjs');
@@ -19,7 +18,7 @@ exports.getOrders = async(req, res, next) => {
         const orders = await Order.find({'seller.userId': req.user._id}).skip((page - 1) * ROWS_PER_PAGE).limit(ROWS_PER_PAGE);
         const totalItems = await Order.find({'seller.userId': req.user._id}).countDocuments();
 
-        res.render(path.join(config.theme.name, 'user', 'orders'), {
+        res.render('user/orders', {
             pageTitle: 'Orders',
             path: '/dashboard/orders',
             orders: orders,
@@ -53,7 +52,7 @@ exports.getInvoices = async(req, res, next) => {
         const orders = await Order.find({'seller.userId': req.user._id, 'order.status': 'completed'}).skip((page - 1) * ROWS_PER_PAGE).limit(ROWS_PER_PAGE);;
         const totalItems = await Order.find({'seller.userId': req.user._id, 'order.status': 'completed'}).countDocuments();
 
-        res.render(path.join(config.theme.name, 'user', 'invoices'), {
+        res.render('user/invoices', {
             pageTitle: 'Invoices',
             path: '/dashboard/invoices',
             orders: orders,
@@ -94,7 +93,7 @@ exports.getInvoice = async(req, res, next) => {
             return res.redirect('/dashboard');
         }
 
-        res.render(path.join(config.theme.name, 'user', 'invoice'), {
+        res.render('user/invoices', {
             pageTitle: 'Invoice',
             path: '/dashboard/invoices',
             order: order,
@@ -160,7 +159,7 @@ exports.getCheckout = async(req, res, next) => {
             return res.redirect(`/user/${seller.username}/product/${product._id}`);
         }
 
-        res.render(path.join(config.theme.name, 'user', 'checkout'), {
+        res.render('user/checkout', {
             pageTitle: 'Checkout',
             path: '/checkout',
             seller: seller,
@@ -199,7 +198,7 @@ exports.postCheckout = async(req, res, next) => {
         const seller = await User.findOne({_id: product.userId}).select('-password');
 
         if(!errors.isEmpty()) {
-            return res.status(422).render(path.join(config.theme.name, 'user', 'checkout'), {
+            return res.status(422).render('user/checkout', {
                 pageTitle: 'Checkout',
                 path: '/checkout',
                 seller: seller,
@@ -219,7 +218,7 @@ exports.postCheckout = async(req, res, next) => {
         }
 
         if(quantity > product.stock) {
-            return res.status(422).render(path.join(config.theme.name, 'user', 'checkout'), {
+            return res.status(422).render('user/checkout', {
                 pageTitle: 'Checkout',
                 path: '/checkout',
                 seller: seller,
@@ -235,7 +234,7 @@ exports.postCheckout = async(req, res, next) => {
 
         // Seller Details
         const sellerId = seller._id;
-        const sellerAccountType = seller.accountType;
+        const sellerAccountType = seller.type;
         const sellerEmail = seller.email;
         const sellerFirstName = seller.firstName;
         const sellerLastName = seller.lastName;
@@ -245,7 +244,7 @@ exports.postCheckout = async(req, res, next) => {
         // Order Details
         const totalPrice = quantity * product.price;
 
-        const sellerInfo = {userId: sellerId, accountType: sellerAccountType, email: sellerEmail, firstName: sellerFirstName, lastName: sellerLastName, phoneNumber: sellerPhoneNumber, location: sellerLocation};
+        const sellerInfo = {userId: sellerId, type: sellerAccountType, email: sellerEmail, firstName: sellerFirstName, lastName: sellerLastName, phoneNumber: sellerPhoneNumber, location: sellerLocation};
         const buyerInfo = {email: buyerEmail, phoneNumber: buyerPhoneNumber, firstName: buyerFirstName, lastName: buyerLastName, location: { country: country, state: state, city: city, zip: zip, address: address }};
         const orderInfo = {
             order: {

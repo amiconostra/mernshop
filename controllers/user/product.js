@@ -1,6 +1,5 @@
 const path = require('path');
 const rootdir = require('../../helpers/rootdir');
-const config = require(path.join(rootdir, 'config.json'));
 const { validationResult } = require('express-validator');
 const fileHelper = require(path.join(rootdir, 'helpers', 'file'));
 
@@ -16,7 +15,7 @@ exports.getProducts = async(req, res, next) => {
         const products = await Product.find({userId: req.user._id}).skip((page - 1) * ROWS_PER_PAGE).limit(ROWS_PER_PAGE);
         const totalItems = await Product.find({userId: req.user._id}).countDocuments();
         
-        res.render(path.join(config.theme.name, 'user', 'products'), {
+        res.render('user/products', {
             pageTitle: 'Products',
             path: '/dashboard/products',
             products: products,
@@ -41,14 +40,14 @@ exports.getProducts = async(req, res, next) => {
 };
 
 exports.getAddProduct = (req, res, next) => {
-    res.render(path.join(config.theme.name, 'user', 'edit-product'), {
+    res.render('user/edit-product', {
         pageTitle: 'Add Product',
         path: '/dashboard/products/add',
         editing: false,
         user: req.user,
         success: req.flash('success')[0],
         error: req.flash('error')[0],
-        validationBox: false,
+        hasError: false,
         validationError: []
     });
 };
@@ -61,13 +60,8 @@ exports.postAddProduct = async(req, res, next) => {
     const stock = req.body.stock;
     const errors = validationResult(req);
 
-    let productImage;
-    if(req.files.productImage) {
-        productImage = req.files.productImage[0];
-    }
-
-    if(!productImage) {
-        return res.status(422).render(path.join(config.theme.name, 'edit-product'), {
+    if(!req.file) {
+        return res.status(422).render('user/edit-product', {
             pageTitle: 'Add Product',
             path: '/dashboard/products/add',
             editing: false,
@@ -75,16 +69,18 @@ exports.postAddProduct = async(req, res, next) => {
             error: 'Please attach an Image file',
             user: req.user,
             product: {name: name, description: description, type: type, price: price, stock: stock},
-            validationBox: false,
+            hasError: true,
             validationError: []
         });
     }
 
+    const imageUrl = req.file.path.replace(/\\/g, '/');
+
     if(!errors.isEmpty()) {
-        if(productImage) {
-            fileHelper.deleteFile(productImage.path);
+        if(imageUrl) {
+            fileHelper.deleteFile(imageUrl);
         }
-        return res.status(422).render(path.join(config.theme.name, 'edit-product'), {
+        return res.status(422).render('user/edit-product', {
             pageTitle: 'Add Product',
             path: '/dashboard/products/add',
             editing: false,
@@ -92,12 +88,11 @@ exports.postAddProduct = async(req, res, next) => {
             success: '',
             error: errors.array()[0].msg,
             product: {name: name, description: description, type: type, price: price, stock: stock},
-            validationBox: true,
+            hasError: true,
             validationError: errors.array()
         });
     }
 
-    const imageUrl = productImage.path;
     const product = new Product({name: name, description: description, type: type, price: price, stock: stock, imageUrl: imageUrl, userId: req.user});
 
     try {
@@ -124,7 +119,7 @@ exports.getEditProduct = async(req, res, next) => {
             return res.redirect('/dashboard/products');
         }
 
-        res.render(path.join(config.theme.name, 'user', 'edit-product'), {
+        res.render('user/edit-product', {
             pageTitle: 'Edit Product',
             path: '/dashboard/products/edit',
             editing: editMode,
@@ -132,7 +127,7 @@ exports.getEditProduct = async(req, res, next) => {
             user: req.user,
             success: req.flash('success')[0],
             error: req.flash('error')[0],
-            validationBox: false,
+            hasError: false,
             validationError: []
         });
     } catch(err) {
@@ -150,17 +145,17 @@ exports.postEditProduct = async(req, res, next) => {
     const updatedPrice = req.body.price;
     const updatedStock = req.body.stock;
     const errors = validationResult(req);
-    
-    let productImage;
-    if(req.files.productImage) {
-        productImage = req.files.productImage[0];
+
+    let imageUrl;
+    if(req.file) {
+        imageUrl = req.file.path.replace(/\\/g, '/');
     }
 
     if(!errors.isEmpty()) {
-        if(productImage) {
-            fileHelper.deleteFile(productImage.path);
+        if(imageUrl) {
+            fileHelper.deleteFile(imageUrl);
         }
-        return res.status(422).render(path.join(config.theme.name, 'edit-product'), {
+        return res.status(422).render('user/edit-product', {
             pageTitle: 'Edit Product',
             path: '/dashboard/products/edit',
             editing: true,
@@ -168,7 +163,7 @@ exports.postEditProduct = async(req, res, next) => {
             success: '',
             error: errors.array()[0].msg,
             product: {_id: productId, name: updatedName, description: updatedDescription, type: updatedType, price: updatedPrice, stock: updatedStock},
-            validationBox: true,
+            hasError: true,
             validationError: errors.array()
         });
     }
@@ -184,9 +179,9 @@ exports.postEditProduct = async(req, res, next) => {
         product.type = updatedType;
         product.price = updatedPrice;
         product.stock = updatedStock;
-        if(productImage) {
+        if(imageUrl) {
             fileHelper.deleteFile(product.imageUrl);
-            product.imageUrl = productImage.path;
+            product.imageUrl = imageUrl;
         }
 
         await product.save();

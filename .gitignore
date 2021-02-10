@@ -2,4 +2,5 @@
 node_modules
 .DS_Store
 config.json
-public/tinydash/assets/products/*.PNG
+public/assets/products/*.PNG
+logs
